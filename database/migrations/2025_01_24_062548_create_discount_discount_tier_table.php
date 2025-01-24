@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('discount_discount_tier', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('discount_id');
-            $table->unsignedBigInteger('discount_tier_id');
+            $table->unsignedBigInteger('discount_id')->constrained('discounts')->cascadeOnDelete();
+            $table->unsignedBigInteger('discount_tier_id')->constrained('discount_tiers')->cascadeOnDelete();
             $table->timestamps();
         });
     }

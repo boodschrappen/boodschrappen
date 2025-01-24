@@ -16,8 +16,8 @@ return new class extends Migration
             $table->float('original_price')->nullable();
             $table->float('reduced_price');
             $table->json('raw');
-            $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('store_id');
+            $table->unsignedBigInteger('product_id')->constrained('products')->cascadeOnDelete();
+            $table->unsignedBigInteger('store_id')->constrained('stores')->cascadeOnDelete();
             $table->timestamps();
         });
     }
