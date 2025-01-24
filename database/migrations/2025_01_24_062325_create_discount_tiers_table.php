@@ -17,6 +17,7 @@ return new class extends Migration
             $table->float('amount');
             $table->enum('unit', ['money', 'percentage']);
             $table->unsignedInteger('size');
+            $table->unsignedBigInteger('discount_id');
             $table->timestamps();
         });
     }

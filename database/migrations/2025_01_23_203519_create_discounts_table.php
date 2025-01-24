@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id');
             $table->date('start');
             $table->date('end');
+            $table->unsignedBigInteger('product_id');
             $table->timestamps();
         });
     }

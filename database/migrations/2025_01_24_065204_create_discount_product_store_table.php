@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('discount_discount_tier', function (Blueprint $table) {
+        Schema::create('discount_product_store', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('discount_id');
-            $table->unsignedBigInteger('discount_tier_id');
+            $table->unsignedBigInteger('product_store_id');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('discount_discount_tier');
+        Schema::dropIfExists('discount_product_store');
     }
 };
