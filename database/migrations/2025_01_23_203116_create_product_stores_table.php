@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_store', function (Blueprint $table) {
+        Schema::create('product_stores', function (Blueprint $table) {
             $table->id();
-            $table->float('original_price')->nullable();
-            $table->float('reduced_price');
+            $table->float('original_price');
+            $table->float('reduced_price')->nullable();
             $table->json('raw');
             $table->unsignedBigInteger('product_id')->constrained('products')->cascadeOnDelete();
             $table->unsignedBigInteger('store_id')->constrained('stores')->cascadeOnDelete();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_store');
+        Schema::dropIfExists('product_stores');
     }
 };

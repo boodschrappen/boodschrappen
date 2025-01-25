@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('start');
             $table->date('end');
+            $table->unsignedBigInteger('product_store_id')->constrained('product_stores')->cascadeOnDelete();
             $table->timestamps();
         });
     }

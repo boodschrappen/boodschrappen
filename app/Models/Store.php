@@ -14,13 +14,13 @@ class Store extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->hasManyThrough(Product::class, ProductStore::class)
-            ->withPivot('current_price', 'reduced_price');
+        return $this->belongsToMany(Product::class, 'product_stores')
+            ->withPivot('original_price', 'reduced_price');
     }
 
     public function discounts(): BelongsToMany
     {
-        return $this->hasManyThrough(Discount::class, ProductStore::class)
-            ->withPivot('current_price', 'reduced_price');
+        return $this->belongsToMany(Discount::class, 'product_stores')
+            ->withPivot('original_price', 'reduced_price');
     }
 }

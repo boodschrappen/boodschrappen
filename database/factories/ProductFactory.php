@@ -17,9 +17,9 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'gtins' => [fake()->randomNumber(8)],
+            'gtins' => json_encode([fake()->randomNumber(8)]),
             'title' => fake()->title(),
-            'summary' => fake()->words(9),
+            'summary' => fake()->sentence(),
             'description' => fake()->paragraph(),
         ];
     }

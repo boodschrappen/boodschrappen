@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->json('gtins')->default([]);
+            $table->json('gtins')->default('[]');
             $table->string('title');
             $table->string('summary');
             $table->string('description');

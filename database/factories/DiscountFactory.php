@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\DiscountTier;
+use App\Models\ProductStore;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,11 +21,12 @@ class DiscountFactory extends Factory
         return [
             'start' => now(),
             'end' => now()->addWeek(),
+            'product_store_id' => ProductStore::factory()
         ];
     }
 
     public function configure()
     {
-        $this->has(DiscountTier::factory(2), 'tiers');
+        return $this->has(DiscountTier::factory(2), 'tiers');
     }
 }

@@ -20,7 +20,7 @@ class Product extends Model
 
     public function stores(): BelongsToMany
     {
-        return $this->belongsToMany(Store::class)
-            ->withPivot('current_price', 'reduced_price');
+        return $this->belongsToMany(Store::class, 'product_stores')
+            ->withPivot('original_price', 'reduced_price');
     }
 }

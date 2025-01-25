@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Discount;
-use App\Models\DiscountTier;
 use App\Models\Product;
 use App\Models\Store;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -16,9 +15,13 @@ class DummyDataSeeder extends Seeder
      */
     public function run(): void
     {
+        $stores = Store::factory(2)->create();
+
         Product::factory(10)
-            ->recycle(Store::factory(3)->create())
-            ->has(Discount::factory(2))
+            ->hasAttached(
+                $stores,
+                ['original_price' => fake()->randomFloat(), 'raw' => json_encode([])]
+            )
             ->create();
     }
 }
