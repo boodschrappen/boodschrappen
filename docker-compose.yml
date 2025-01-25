@@ -1,0 +1,52 @@
+---
+services:
+    app:
+        container_name: boodschrappen-app
+        build:
+            context: .
+        restart: unless-stopped
+        networks:
+            - internal
+        ports:
+            - 8000:8000
+        volumes:
+            - .:/app
+        depends_on:
+            - database
+
+    database:
+        image: postgres:17.2
+        container_name: boodschrappen-db
+        restart: unless-stopped
+        networks:
+            - internal
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER:-postgres}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+            POSTGRES_DB: ${POSTGRES_DB:-boodschrappen}
+        healthcheck:
+            test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-postgres}"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    redis:
+        image: redis:alpine
+        volumes:
+            - redis-data:/data
+        networks:
+            - internal
+        restart: always
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            retries: 3
+            timeout: 5s
+
+networks:
+    internal:
+
+volumes:
+    postgres-data:
+    redis-data:
