@@ -18,7 +18,7 @@ class ProductFactory extends Factory
     {
         return [
             'gtins' => json_encode([fake()->randomNumber(8)]),
-            'title' => fake()->title(),
+            'name' => fake()->words(asText: true),
             'summary' => fake()->sentence(),
             'description' => fake()->paragraph(),
         ];

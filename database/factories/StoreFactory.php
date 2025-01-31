@@ -17,7 +17,15 @@ class StoreFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->title(),
+            'name' => fake()->randomElement([
+                'Ah',
+                'Vomar',
+                'Jumbo',
+                'Dirk',
+                'DekaMarkt',
+                'Aldi',
+                'Lidl',
+            ]),
         ];
     }
 }

@@ -15,13 +15,15 @@ class DummyDataSeeder extends Seeder
      */
     public function run(): void
     {
-        $stores = Store::factory(2)->create();
+        $stores = Store::factory(8)->create();
 
-        Product::factory(10)
-            ->hasAttached(
-                $stores,
-                ['original_price' => fake()->randomFloat(), 'raw' => json_encode([])]
-            )
-            ->create();
+        for ($i = 0; $i < 10; $i++) {
+            Product::factory()
+                ->hasAttached(
+                    $stores,
+                    ['original_price' => fake()->randomFloat(), 'raw' => json_encode([])]
+                )
+                ->create();
+        }
     }
 }

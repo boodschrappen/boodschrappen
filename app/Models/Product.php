@@ -5,13 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'gtins' => 'array',
+    ];
 
     public function discounts(): HasManyThrough
     {
@@ -22,5 +28,10 @@ class Product extends Model
     {
         return $this->belongsToMany(Store::class, 'product_stores')
             ->withPivot('original_price', 'reduced_price');
+    }
+
+    public function productStores(): HasMany
+    {
+        return $this->hasMany(ProductStore::class);
     }
 }
