@@ -1,0 +1,354 @@
+[
+    {
+        "departmentNumber": 10,
+        "mainGroupNumber": 100
+    },
+    {
+        "departmentNumber": 15,
+        "mainGroupNumber": 150
+    },
+    {
+        "departmentNumber": 15,
+        "mainGroupNumber": 151
+    },
+    {
+        "departmentNumber": 15,
+        "mainGroupNumber": 152
+    },
+    {
+        "departmentNumber": 20,
+        "mainGroupNumber": 200
+    },
+    {
+        "departmentNumber": 20,
+        "mainGroupNumber": 201
+    },
+    {
+        "departmentNumber": 20,
+        "mainGroupNumber": 202
+    },
+    {
+        "departmentNumber": 20,
+        "mainGroupNumber": 203
+    },
+    {
+        "departmentNumber": 20,
+        "mainGroupNumber": 204
+    },
+    {
+        "departmentNumber": 20,
+        "mainGroupNumber": 205
+    },
+    {
+        "departmentNumber": 20,
+        "mainGroupNumber": 206
+    },
+    {
+        "departmentNumber": 20,
+        "mainGroupNumber": 207
+    },
+    {
+        "departmentNumber": 20,
+        "mainGroupNumber": 208
+    },
+    {
+        "departmentNumber": 20,
+        "mainGroupNumber": 209
+    },
+    {
+        "departmentNumber": 20,
+        "mainGroupNumber": 210
+    },
+    {
+        "departmentNumber": 25,
+        "mainGroupNumber": 250
+    },
+    {
+        "departmentNumber": 25,
+        "mainGroupNumber": 251
+    },
+    {
+        "departmentNumber": 25,
+        "mainGroupNumber": 252
+    },
+    {
+        "departmentNumber": 25,
+        "mainGroupNumber": 253
+    },
+    {
+        "departmentNumber": 25,
+        "mainGroupNumber": 254
+    },
+    {
+        "departmentNumber": 25,
+        "mainGroupNumber": 255
+    },
+    {
+        "departmentNumber": 25,
+        "mainGroupNumber": 256
+    },
+    {
+        "departmentNumber": 25,
+        "mainGroupNumber": 257
+    },
+    {
+        "departmentNumber": 25,
+        "mainGroupNumber": 258
+    },
+    {
+        "departmentNumber": 30,
+        "mainGroupNumber": 300
+    },
+    {
+        "departmentNumber": 30,
+        "mainGroupNumber": 301
+    },
+    {
+        "departmentNumber": 30,
+        "mainGroupNumber": 303
+    },
+    {
+        "departmentNumber": 30,
+        "mainGroupNumber": 304
+    },
+    {
+        "departmentNumber": 35,
+        "mainGroupNumber": 350
+    },
+    {
+        "departmentNumber": 35,
+        "mainGroupNumber": 351
+    },
+    {
+        "departmentNumber": 35,
+        "mainGroupNumber": 352
+    },
+    {
+        "departmentNumber": 40,
+        "mainGroupNumber": 400
+    },
+    {
+        "departmentNumber": 40,
+        "mainGroupNumber": 401
+    },
+    {
+        "departmentNumber": 40,
+        "mainGroupNumber": 402
+    },
+    {
+        "departmentNumber": 40,
+        "mainGroupNumber": 403
+    },
+    {
+        "departmentNumber": 40,
+        "mainGroupNumber": 404
+    },
+    {
+        "departmentNumber": 40,
+        "mainGroupNumber": 405
+    },
+    {
+        "departmentNumber": 40,
+        "mainGroupNumber": 406
+    },
+    {
+        "departmentNumber": 40,
+        "mainGroupNumber": 407
+    },
+    {
+        "departmentNumber": 40,
+        "mainGroupNumber": 408
+    },
+    {
+        "departmentNumber": 40,
+        "mainGroupNumber": 409
+    },
+    {
+        "departmentNumber": 40,
+        "mainGroupNumber": 410
+    },
+    {
+        "departmentNumber": 40,
+        "mainGroupNumber": 411
+    },
+    {
+        "departmentNumber": 40,
+        "mainGroupNumber": 412
+    },
+    {
+        "departmentNumber": 45,
+        "mainGroupNumber": 450
+    },
+    {
+        "departmentNumber": 45,
+        "mainGroupNumber": 451
+    },
+    {
+        "departmentNumber": 45,
+        "mainGroupNumber": 452
+    },
+    {
+        "departmentNumber": 45,
+        "mainGroupNumber": 453
+    },
+    {
+        "departmentNumber": 45,
+        "mainGroupNumber": 454
+    },
+    {
+        "departmentNumber": 45,
+        "mainGroupNumber": 456
+    },
+    {
+        "departmentNumber": 45,
+        "mainGroupNumber": 457
+    },
+    {
+        "departmentNumber": 45,
+        "mainGroupNumber": 458
+    },
+    {
+        "departmentNumber": 45,
+        "mainGroupNumber": 459
+    },
+    {
+        "departmentNumber": 45,
+        "mainGroupNumber": 460
+    },
+    {
+        "departmentNumber": 45,
+        "mainGroupNumber": 461
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 500
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 501
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 502
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 503
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 504
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 505
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 506
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 507
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 508
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 509
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 510
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 511
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 512
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 513
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 514
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 515
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 516
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 517
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 518
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 519
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 520
+    },
+    {
+        "departmentNumber": 50,
+        "mainGroupNumber": 521
+    },
+    {
+        "departmentNumber": 55,
+        "mainGroupNumber": 550
+    },
+    {
+        "departmentNumber": 55,
+        "mainGroupNumber": 551
+    },
+    {
+        "departmentNumber": 55,
+        "mainGroupNumber": 552
+    },
+    {
+        "departmentNumber": 55,
+        "mainGroupNumber": 553
+    },
+    {
+        "departmentNumber": 55,
+        "mainGroupNumber": 554
+    },
+    {
+        "departmentNumber": 55,
+        "mainGroupNumber": 555
+    },
+    {
+        "departmentNumber": 55,
+        "mainGroupNumber": 556
+    },
+    {
+        "departmentNumber": 55,
+        "mainGroupNumber": 557
+    },
+    {
+        "departmentNumber": 55,
+        "mainGroupNumber": 558
+    },
+    {
+        "departmentNumber": 55,
+        "mainGroupNumber": 559
+    },
+    {
+        "departmentNumber": 55,
+        "mainGroupNumber": 560
+    }
+]
