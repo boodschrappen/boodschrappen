@@ -1,7 +1,7 @@
 <?php
 
 use App\Console\Commands\CrawlCategories;
-use App\Console\Commands\CrawlProducts;
+// use App\Console\Commands\CrawlProducts;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -21,6 +21,6 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command(CrawlCategories::class)->weeklyOn(0, '00:00');
-        $schedule->command(CrawlProducts::class)->weeklyOn(0, '02:00');
+        // $schedule->command(CrawlProducts::class)->weeklyOn(0, '02:00');
     })
     ->create();

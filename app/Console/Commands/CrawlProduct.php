@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Console\Crawler\AhCrawler;
 use Illuminate\Console\Command;
 
-class CrawlProducts extends Command
+class CrawlProduct extends Command
 {
     /**
      * The name and signature of the console command.

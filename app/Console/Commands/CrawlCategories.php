@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\FetchProduct;
+use App\Models\ProductStore;
 use App\Services\Crawlers\AhCrawler;
 use App\Services\Crawlers\Crawler;
 use App\Services\Crawlers\VomarCrawler;
-use App\Models\Product;
-use App\Models\ProductStore;
-use App\Models\Store;
 use Illuminate\Console\Command;
+use Illuminate\Queue\Queue;
 
 class CrawlCategories extends Command
 {
@@ -28,7 +28,7 @@ class CrawlCategories extends Command
 
     protected array $crawlers = [
         AhCrawler::class,
-        VomarCrawler::class,
+        // VomarCrawler::class,
     ];
 
     /**
@@ -37,24 +37,45 @@ class CrawlCategories extends Command
     public function handle()
     {
         foreach ($this->crawlers as $crawler) {
-            $crawler = app($crawler);
+            $this->crawl(app($crawler));
+        }
+    }
 
-            $products = $crawler->fetchAllProducts();
+    protected function crawl(Crawler $crawler)
+    {
+        $products = $crawler->fetchAllProducts();
+        $store = $crawler->getStore();
 
-            // Existing products
-            // Find existing products. These will already be attached to the store.
-            $existingProducts = $crawler->getStore()->products()->pluck('gtins');
+        // Find existing products. These will already be attached to the store.
+        $existingIds = $store->storeProducts()->pluck('raw_identifier');
 
+        // Insert new products. Updating products is done in a separate process.
+        $newProducts = $products
             // Find out which products need to be added.
-            $newProducts = $crawler->getStore()->products()->create(
-                $products
-                    ->where(fn($product) => ! $existingProducts->contains(
-                        fn($existingProduct) => array_intersect($existingProduct->gtins, $product->gtins)
-                    ))
-                    ->only('gtins', 'name', 'summary', 'description')
-            );
+            ->where(fn($product) => ! $existingIds->contains(
+                fn($existingId) => array_intersect(
+                    $existingId,
+                    $product->toStoreProduct()->raw_identifier
+                )
+            ))
+            ->mapWithKeys(function ($product) {
+                $savedProduct = $product->toProduct();
+                $savedProduct->save();
 
-            // Push new products to the queue.
+                return [$savedProduct->id => $product->toStoreProduct()->toArray()];
+            });
+
+        $store->products()->attach($newProducts);
+
+        // TODO: (Soft) Delete outdated products
+        // ProductStore::query()
+        //     ->where('store_id', $store->id)
+        //     ->whereIn('product_id', )
+        //     ->delete();
+
+        // Push new products to the queue to fetch full product details.
+        foreach ($newProducts as $newProduct) {
+            FetchProduct::dispatch(new ProductStore($newProduct));
         }
     }
 }

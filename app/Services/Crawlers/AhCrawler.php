@@ -3,12 +3,12 @@
 namespace App\Services\Crawlers;
 
 use App\Data\AhProductData;
-use App\Data\ProductData;
 use App\Models\Store;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Sleep;
+use Spatie\LaravelData\Data;
 
 class AhCrawler extends Crawler
 {
@@ -69,7 +69,7 @@ class AhCrawler extends Crawler
                 $products->merge($fetchProductsInCategory($categoryId, $page));
             }
 
-            return $products;
+            return AhProductData::collect($products);
         });
     }
 
@@ -78,16 +78,16 @@ class AhCrawler extends Crawler
         return collect();
     }
 
-    public function fetchProduct(mixed $identifier): ProductData
+    public function fetchProduct(mixed $identifier): Data
     {
         return Cache::remember(self::class, 3600 * 24, fn() => $this->formatProduct(
             $this->http()->get("https://api.ah.nl/mobile-services/product/detail/v4/fir/$identifier")
         ));
     }
 
-    public function formatProduct(mixed $raw): ProductData
+    public function formatProduct(mixed $raw): Data
     {
-        return AhProductData::fromRaw($raw);
+        return AhProductData::from($raw);
     }
 
     public function getStore(): Store

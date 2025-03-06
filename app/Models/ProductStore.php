@@ -13,6 +13,10 @@ class ProductStore extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'raw' => 'array',
+    ];
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);

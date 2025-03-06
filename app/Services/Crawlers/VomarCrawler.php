@@ -3,11 +3,11 @@
 namespace App\Services\Crawlers;
 
 use App\Data\VomarProductData;
-use App\Data\ProductData;
 use App\Models\Store;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Spatie\LaravelData\Data;
 
 class VomarCrawler extends Crawler
 {
@@ -43,14 +43,14 @@ class VomarCrawler extends Crawler
         return collect();
     }
 
-    public function fetchProduct(mixed $identifier): ProductData
+    public function fetchProduct(mixed $identifier): Data
     {
-        return new VomarProductData($identifier);
+        return $this->formatProduct([]);
     }
 
-    public function formatProduct(mixed $raw): ProductData
+    public function formatProduct(mixed $raw): Data
     {
-        return VomarProductData::fromRaw($raw);
+        return VomarProductData::from($raw);
     }
 
     public function getStore(): Store

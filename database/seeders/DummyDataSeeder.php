@@ -21,7 +21,11 @@ class DummyDataSeeder extends Seeder
             Product::factory()
                 ->hasAttached(
                     $stores,
-                    ['original_price' => fake()->randomFloat(), 'raw' => json_encode([])]
+                    [
+                        'original_price' => fake()->randomFloat(),
+                        'raw_identifier' => random_int(0, 10000),
+                        'raw' => json_encode([])
+                    ]
                 )
                 ->create();
         }

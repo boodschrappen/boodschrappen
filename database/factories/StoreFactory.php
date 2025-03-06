@@ -26,6 +26,15 @@ class StoreFactory extends Factory
                 'Aldi',
                 'Lidl',
             ]),
+            'slug' => fake()->randomElement([
+                'ah',
+                'vomar',
+                'jumbo',
+                'dirk',
+                'dekamarkt',
+                'aldi',
+                'lidl',
+            ])
         ];
     }
 }
