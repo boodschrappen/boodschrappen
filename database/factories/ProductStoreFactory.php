@@ -22,6 +22,7 @@ class ProductStoreFactory extends Factory
             'original_price' => fake()->randomFloat(),
             'reduced_price' => fake()->randomFloat(),
             'raw' => [],
+            'raw_identifier' => fake()->randomDigit(),
             'product_id' => Product::factory(),
             'store_id' => Store::factory(),
         ];

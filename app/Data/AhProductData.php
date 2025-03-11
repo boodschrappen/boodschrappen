@@ -61,4 +61,14 @@ class AhProductData extends Data implements ProductData
             'raw' => json_encode($this->toArray()),
         ]);
     }
+
+    public static function fromModel(ProductStore $storeProduct): self
+    {
+        return self::from([
+            'webshopId' => $storeProduct->raw_identifier,
+            'title' => $storeProduct->product->name,
+            'descriptionHighlights' => $storeProduct->product->summary,
+            'priceBeforeBonus' => $storeProduct->original_price,
+        ]);
+    }
 }

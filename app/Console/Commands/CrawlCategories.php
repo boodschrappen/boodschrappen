@@ -8,7 +8,8 @@ use App\Services\Crawlers\AhCrawler;
 use App\Services\Crawlers\Crawler;
 use App\Services\Crawlers\VomarCrawler;
 use Illuminate\Console\Command;
-use Illuminate\Queue\Queue;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class CrawlCategories extends Command
 {
@@ -17,7 +18,7 @@ class CrawlCategories extends Command
      *
      * @var string
      */
-    protected $signature = 'crawl:categories';
+    protected $signature = 'crawl:categories {storeSlug?}';
 
     /**
      * The console command description.
@@ -28,7 +29,7 @@ class CrawlCategories extends Command
 
     protected array $crawlers = [
         AhCrawler::class,
-        // VomarCrawler::class,
+        VomarCrawler::class,
     ];
 
     /**
@@ -36,12 +37,17 @@ class CrawlCategories extends Command
      */
     public function handle()
     {
+        if ($slug = $this->argument('storeSlug')) {
+            $crawler = Str::of($slug)->title()->prepend('App\Services\Crawlers\\')->append('Crawler')->toString();
+            return $this->crawl(app($crawler));
+        }
+
         foreach ($this->crawlers as $crawler) {
             $this->crawl(app($crawler));
         }
     }
 
-    protected function crawl(Crawler $crawler)
+    protected function crawl(Crawler $crawler): void
     {
         $products = $crawler->fetchAllProducts();
         $store = $crawler->getStore();
@@ -52,12 +58,7 @@ class CrawlCategories extends Command
         // Insert new products. Updating products is done in a separate process.
         $newProducts = $products
             // Find out which products need to be added.
-            ->where(fn($product) => ! $existingIds->contains(
-                fn($existingId) => array_intersect(
-                    $existingId,
-                    $product->toStoreProduct()->raw_identifier
-                )
-            ))
+            ->where(fn($product) => ! $existingIds->contains($product->toStoreProduct()->raw_identifier))
             ->mapWithKeys(function ($product) {
                 $savedProduct = $product->toProduct();
                 $savedProduct->save();

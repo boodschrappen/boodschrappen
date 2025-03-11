@@ -1,29 +1,39 @@
 <?php
 
-use App\Data\AhProductData;
 use App\Models\Product;
+use App\Models\ProductStore;
 use App\Models\Store;
-use App\Services\Crawlers\AhCrawler;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Str;
 use Mockery\MockInterface;
 
-test('fetch all products', function () {
-    $this->mock(AhCrawler::class, function (MockInterface $mock) {
-        $mock->shouldReceive('fetchAllProducts')
-            ->andReturn(collect([AhProductData::from([
-                'webshopId' => 4177,
-                'title' => 'Ah Broccoli',
-                'descriptionHighlights' => 'Broccoli heeft een knapperige, frisse iets pittigere smaak dan bloemkool.',
-                'priceBeforeBonus' => 1.45
-            ])]));
+test('fetch all products', function (string $slug) {
+    // Arrange
 
-        $mock->shouldReceive('getStore')
-            ->andReturn(Store::factory(['slug' => 'ah'])->create());
-    });
+    $crawler = Str::of($slug)->title()->prepend('App\Services\Crawlers\\')->append('Crawler')->toString();
+    $dataModel = Str::of($slug)->title()->prepend('App\Data\\')->append('ProductData')->toString();
 
     Queue::fake();
 
-    $this->artisan('crawl:categories')->assertExitCode(0);
+    $store = Store::factory(['slug' => $slug])->create();
+
+    $productData = $dataModel::fromModel(ProductStore::factory([
+        'store_id' => $store->id,
+    ])->make());
+
+    $this->mock($crawler, function (MockInterface $mock) use ($store, $productData) {
+        $mock->shouldReceive('fetchAllProducts')
+            ->andReturn(collect([$productData]));
+
+        $mock->shouldReceive('getStore')
+            ->andReturn($store);
+    });
+
+    // Act
+
+    $this->artisan('crawl:categories', ['storeSlug' => $slug])->assertExitCode(0);
+
+    // Assert
 
     $storeProduct = Product::orderBy('id', 'desc')
         ->first()
@@ -32,6 +42,7 @@ test('fetch all products', function () {
         ->first()
         ->pivot;
 
-    expect($storeProduct->raw_identifier)->toBe('4177');
-    expect($storeProduct->original_price)->toBe(1.45);
-});
+    expect($storeProduct->raw_identifier)->toBe(str($productData->toStoreProduct()->raw_identifier)->toString());
+    expect((int) $storeProduct->original_price)->toBe((int) $productData->toStoreProduct()->original_price);
+})
+    ->with(['ah', 'vomar']);
