@@ -7,11 +7,19 @@ use App\Models\Store;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Sleep;
 use Spatie\LaravelData\Data;
 
 class AhCrawler extends Crawler
 {
+    protected readonly int $pageSize;
+
+    public function __construct()
+    {
+        $this->pageSize = 10;
+    }
+
     protected function getToken()
     {
         static $token;
@@ -53,24 +61,24 @@ class AhCrawler extends Crawler
     {
         $categoryId = $category['id'];
 
-        return Cache::remember(AhCrawler::class . '_category_products_' . $categoryId, 3600 * 24 * 7, function () use ($categoryId) {
-            $fetchProductsInCategory = fn($categoryId, $page) => $this->http()
-                ->get('https://api.ah.nl/mobile-services/product/search/v2', [
-                    'taxonomyId' => $categoryId,
-                    'page' => $page,
-                    'size' => 1000,
-                ]);
+        $fetchProductsInCategory = fn($categoryId, $page) => $this->http()
+            ->get('https://api.ah.nl/mobile-services/product/search/v2', [
+                'taxonomyId' => $categoryId,
+                'page' => $page,
+                'size' => $this->pageSize,
+            ]);
 
-            $initialCategoryRequest = $fetchProductsInCategory($categoryId, 0);
-            $products = collect($initialCategoryRequest['products']);
+        $initialCategoryRequest = $fetchProductsInCategory($categoryId, 0);
+        $products = collect($initialCategoryRequest['products']);
 
-            for ($page = 1; $page < $initialCategoryRequest['page']['totalPages']; $page++) {
-                Sleep::sleep(5);
-                $products->merge($fetchProductsInCategory($categoryId, $page));
-            }
+        // for ($page = 1; $page < $initialCategoryRequest['page']['totalPages']; $page++) {
+        //     Sleep::sleep(5);
+        //     $products->merge($fetchProductsInCategory($categoryId, $page)['products']);
+        // }
 
-            return AhProductData::collect($products);
-        });
+        return AhProductData::factory()
+            ->withOptionalValues()
+            ->collect($products);
     }
 
     public function fetchDiscounts(): Collection

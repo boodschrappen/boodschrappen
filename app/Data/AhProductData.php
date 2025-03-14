@@ -11,35 +11,35 @@ use Spatie\LaravelData\Optional;
 class AhProductData extends Data implements ProductData
 {
     public function __construct(
-        public int              $webshopId,
-        public int|Optional     $hqId,
-        public string           $title,
-        public string|Optional  $salesUnitSize,
-        public string|Optional  $unitPriceDescription,
-        public array|Optional   $images,
-        public float|Optional   $currentPrice,
-        public float            $priceBeforeBonus,
-        public string|Optional  $orderAvailabilityStatus,
-        public string|Optional  $mainCategory,
-        public string|Optional  $subCategory,
-        public string|Optional  $brand,
-        public string|Optional  $shopType,
-        public bool|Optional    $availableOnline,
-        public bool|Optional    $isPreviouslyBought,
-        public string           $descriptionHighlights,
-        public array|Optional   $propertyIcons,
-        public string|Optional  $nutriscore,
-        public bool|Optional    $nix18,
-        public bool|Optional    $isStapelBonus,
-        public array|Optional   $extraDescriptions,
-        public bool|Optional    $isBonus,
-        public string|Optional  $descriptionFull,
-        public bool|Optional    $isOrderable,
-        public bool|Optional    $isInfiniteBonus,
-        public bool|Optional    $isSample,
-        public bool|Optional    $isSponsored,
-        public bool|Optional    $isVirtualBundle,
-        public array|Optional   $discountLabels,
+        public int                   $webshopId,
+        public string                $title,
+        public string                $descriptionHighlights,
+        public Optional|null|int     $hqId = null,
+        public Optional|null|string  $salesUnitSize = null,
+        public Optional|null|string  $unitPriceDescription = null,
+        public Optional|null|array   $images = null,
+        public Optional|null|float   $currentPrice = null,
+        public Optional|null|float   $priceBeforeBonus = null,
+        public Optional|null|string  $orderAvailabilityStatus = null,
+        public Optional|null|string  $mainCategory = null,
+        public Optional|null|string  $subCategory = null,
+        public Optional|null|string  $brand = null,
+        public Optional|null|string  $shopType = null,
+        public Optional|null|bool    $availableOnline = null,
+        public Optional|null|bool    $isPreviouslyBought = null,
+        public Optional|null|array   $propertyIcons = null,
+        public Optional|null|string  $nutriscore = null,
+        public Optional|null|bool    $nix18 = null,
+        public Optional|null|bool    $isStapelBonus = null,
+        public Optional|null|array   $extraDescriptions = null,
+        public Optional|null|bool    $isBonus = null,
+        public Optional|null|string  $descriptionFull = null,
+        public Optional|null|bool    $isOrderable = null,
+        public Optional|null|bool    $isInfiniteBonus = null,
+        public Optional|null|bool    $isSample = null,
+        public Optional|null|bool    $isSponsored = null,
+        public Optional|null|bool    $isVirtualBundle = null,
+        public Optional|null|array   $discountLabels = null,
     ) {}
 
     public function toProduct(): Product
@@ -56,18 +56,19 @@ class AhProductData extends Data implements ProductData
     {
         return new ProductStore([
             'raw_identifier' => $this->webshopId,
-            'reduced_price' => null,
-            'original_price' => $this->priceBeforeBonus,
+            'reduced_price' => $this->currentPrice,
+            'original_price' => $this->priceBeforeBonus ?? $this->currentPrice,
             'raw' => json_encode($this->toArray()),
         ]);
     }
 
     public static function fromModel(ProductStore $storeProduct): self
     {
-        return self::from([
+        return self::factory()->withOptionalValues()->from([
             'webshopId' => $storeProduct->raw_identifier,
             'title' => $storeProduct->product->name,
             'descriptionHighlights' => $storeProduct->product->summary,
+            'currentPrice' => $storeProduct->reduced_price,
             'priceBeforeBonus' => $storeProduct->original_price,
         ]);
     }

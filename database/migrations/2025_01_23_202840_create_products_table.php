@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->json('gtins')->default('[]');
             $table->string('name');
-            $table->string('summary');
-            $table->string('description');
+            $table->mediumText('summary');
+            $table->mediumText('description');
             $table->timestamps();
         });
     }

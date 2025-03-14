@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\FetchProduct;
 use App\Models\Product;
 use App\Models\ProductStore;
 use App\Models\Store;
@@ -44,5 +45,7 @@ test('fetch all products', function (string $slug) {
 
     expect($storeProduct->raw_identifier)->toBe(str($productData->toStoreProduct()->raw_identifier)->toString());
     expect((int) $storeProduct->original_price)->toBe((int) $productData->toStoreProduct()->original_price);
+
+    Queue::assertPushed(FetchProduct::class);
 })
     ->with(['ah', 'vomar']);

@@ -8,7 +8,7 @@ use App\Services\Crawlers\AhCrawler;
 use App\Services\Crawlers\Crawler;
 use App\Services\Crawlers\VomarCrawler;
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CrawlCategories extends Command
@@ -29,7 +29,7 @@ class CrawlCategories extends Command
 
     protected array $crawlers = [
         AhCrawler::class,
-        VomarCrawler::class,
+        // VomarCrawler::class,
     ];
 
     /**
@@ -76,7 +76,9 @@ class CrawlCategories extends Command
 
         // Push new products to the queue to fetch full product details.
         foreach ($newProducts as $newProduct) {
-            FetchProduct::dispatch(new ProductStore($newProduct));
+            FetchProduct::dispatch($crawler::class, new ProductStore($newProduct));
         }
+
+        Log::debug(count($newProducts));
     }
 }

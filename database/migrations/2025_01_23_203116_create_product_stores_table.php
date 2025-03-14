@@ -13,12 +13,17 @@ return new class extends Migration
     {
         Schema::create('product_stores', function (Blueprint $table) {
             $table->id();
-            $table->float('original_price');
+
+            // We want to support stores that don't always display the price with the product.
+            $table->float('original_price')->nullable();
             $table->float('reduced_price')->nullable();
+
             $table->json('raw');
             $table->string('raw_identifier');
+
             $table->unsignedBigInteger('product_id')->constrained('products')->cascadeOnDelete();
             $table->unsignedBigInteger('store_id')->constrained('stores')->cascadeOnDelete();
+
             $table->timestamps();
         });
     }

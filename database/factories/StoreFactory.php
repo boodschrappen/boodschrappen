@@ -17,24 +17,15 @@ class StoreFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->randomElement([
-                'Ah',
-                'Vomar',
-                'Jumbo',
-                'Dirk',
-                'DekaMarkt',
-                'Aldi',
-                'Lidl',
+            ...fake()->unique()->randomElement([
+                ['slug' => 'ah',        'name' => 'Ah'],
+                ['slug' => 'vomar',     'name' => 'Vomar'],
+                ['slug' => 'jumbo',     'name' => 'Jumbo'],
+                ['slug' => 'dirk',      'name' => 'Dirk'],
+                ['slug' => 'dekamarkt', 'name' => 'DekaMarkt'],
+                ['slug' => 'aldi',      'name' => 'Aldi'],
+                ['slug' => 'lidl',      'name' => 'Lidl'],
             ]),
-            'slug' => fake()->randomElement([
-                'ah',
-                'vomar',
-                'jumbo',
-                'dirk',
-                'dekamarkt',
-                'aldi',
-                'lidl',
-            ])
         ];
     }
 }

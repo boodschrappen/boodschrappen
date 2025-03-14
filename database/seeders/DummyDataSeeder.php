@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Discount;
 use App\Models\Product;
 use App\Models\Store;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DummyDataSeeder extends Seeder
@@ -15,12 +13,12 @@ class DummyDataSeeder extends Seeder
      */
     public function run(): void
     {
-        $stores = Store::factory(8)->create();
+        $stores = Store::all();
 
         for ($i = 0; $i < 10; $i++) {
             Product::factory()
                 ->hasAttached(
-                    $stores,
+                    $stores->random(),
                     [
                         'original_price' => fake()->randomFloat(),
                         'raw_identifier' => random_int(0, 10000),
