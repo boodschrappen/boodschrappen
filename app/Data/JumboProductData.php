@@ -11,21 +11,21 @@ use Spatie\LaravelData\Optional;
 class JumboProductData extends Data implements ProductData
 {
     public function __construct(
-        public string           $id,
-        public string           $title,
-        public array|Optional   $quantityOptions,
-        public bool|Optional    $available,
-        public string|Optional  $productType,
-        public array|Optional   $crossSellSKUList,
-        public bool|Optional    $nixProduct,
-        public array|Optional   $imageInfo,
-        public string|Optional  $unavailabilityReason,
-        public array            $price,
-        public array|Optional   $badgesToDisplay,
-        public bool|Optional    $sample,
-        public array|Optional   $availability,
-        public array|Optional   $allergens,
-        public array|Optional   $surcharges,
+        public string                $id,
+        public string                $title,
+        public Optional|null|array   $price = null,
+        public Optional|null|array   $quantityOptions = null,
+        public Optional|null|bool    $available = null,
+        public Optional|null|string  $productType = null,
+        public Optional|null|array   $crossSellSKUList = null,
+        public Optional|null|bool    $nixProduct = null,
+        public Optional|null|array   $imageInfo = null,
+        public Optional|null|string  $unavailabilityReason = null,
+        public Optional|null|array   $badgesToDisplay = null,
+        public Optional|null|bool    $sample = null,
+        public Optional|null|array   $availability = null,
+        public Optional|null|array   $allergens = null,
+        public Optional|null|array   $surcharges = null,
     ) {}
 
     public function toProduct(): Product

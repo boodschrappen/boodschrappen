@@ -11,12 +11,7 @@ use Spatie\LaravelData\Data;
 
 class AhCrawler extends Crawler
 {
-    protected readonly int $pageSize;
-
-    public function __construct()
-    {
-        $this->pageSize = 1000;
-    }
+    protected const PAGE_SIZE = 1000;
 
     protected function getToken()
     {
@@ -66,7 +61,7 @@ class AhCrawler extends Crawler
                 ->get('https://api.ah.nl/mobile-services/product/search/v2', [
                     'taxonomyId' => $categoryId,
                     'page' => $page,
-                    'size' => $this->pageSize,
+                    'size' => self::PAGE_SIZE,
                 ]);
 
             if ($response->successful()) {

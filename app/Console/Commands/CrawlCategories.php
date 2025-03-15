@@ -7,6 +7,7 @@ use App\Models\ProductStore;
 use App\Models\Store;
 use App\Services\Crawlers\AhCrawler;
 use App\Services\Crawlers\Crawler;
+use App\Services\Crawlers\JumboCrawler;
 use App\Services\Crawlers\VomarCrawler;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
@@ -32,6 +33,7 @@ class CrawlCategories extends Command
     protected array $crawlers = [
         AhCrawler::class,
         VomarCrawler::class,
+        JumboCrawler::class,
     ];
 
     /**

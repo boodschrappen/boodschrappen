@@ -18,7 +18,7 @@ class VomarCrawler extends Crawler
 
     protected function http()
     {
-        return Http::withHeaders($this->getHeaders());
+        return Http::retry(3, 1000, throw: false)->withHeaders($this->getHeaders());
     }
 
     public function fetchCategories(): Collection
