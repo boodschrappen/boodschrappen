@@ -28,14 +28,16 @@ class VomarCrawler extends Crawler
 
     public function fetchProductsByCategory(mixed $category): Collection
     {
-        $cacheKey = VomarCrawler::class . '_category_products_' . $category['departmentNumber'] . '_' . $category['mainGroupNumber'];
-
-        return Cache::remember($cacheKey, 3600 * 24 * 7, function () use ($category) {
-            return $this->http()->get('https://api.vomar.nl/api/v1/article/getAllArticlesForMainGroup', [
+        $products =  $this->http()
+            ->get('https://api.vomar.nl/api/v1/article/getAllArticlesForMainGroup', [
                 'departmentNumber' => $category['departmentNumber'],
                 'mainGroupNumber' => $category['mainGroupNumber'],
-            ])->collect();
-        });
+            ])
+            ->collect();
+
+        return VomarProductData::factory()
+            ->withoutOptionalValues()
+            ->collect($products);
     }
 
     public function fetchDiscounts(): Collection

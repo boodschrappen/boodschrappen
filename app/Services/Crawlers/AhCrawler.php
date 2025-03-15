@@ -5,9 +5,7 @@ namespace App\Services\Crawlers;
 use App\Data\AhProductData;
 use App\Models\Store;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Sleep;
 use Spatie\LaravelData\Data;
 
@@ -17,7 +15,7 @@ class AhCrawler extends Crawler
 
     public function __construct()
     {
-        $this->pageSize = 10;
+        $this->pageSize = 1000;
     }
 
     protected function getToken()
@@ -47,7 +45,7 @@ class AhCrawler extends Crawler
 
     protected function http()
     {
-        return Http::withHeaders($this->getHeaders());
+        return Http::retry(3, 1000, throw: false)->withHeaders($this->getHeaders());
     }
 
     public function fetchCategories(): Collection
@@ -61,23 +59,36 @@ class AhCrawler extends Crawler
     {
         $categoryId = $category['id'];
 
-        $fetchProductsInCategory = fn($categoryId, $page) => $this->http()
-            ->get('https://api.ah.nl/mobile-services/product/search/v2', [
-                'taxonomyId' => $categoryId,
-                'page' => $page,
-                'size' => $this->pageSize,
-            ]);
+        $products = collect();
+
+        $fetchProductsInCategory = function ($categoryId, $page) use ($products) {
+            $response = $this->http()
+                ->get('https://api.ah.nl/mobile-services/product/search/v2', [
+                    'taxonomyId' => $categoryId,
+                    'page' => $page,
+                    'size' => $this->pageSize,
+                ]);
+
+            if ($response->successful()) {
+                $products->push(...$response['products']);
+            }
+
+            return $response;
+        };
 
         $initialCategoryRequest = $fetchProductsInCategory($categoryId, 0);
-        $products = collect($initialCategoryRequest['products']);
 
-        // for ($page = 1; $page < $initialCategoryRequest['page']['totalPages']; $page++) {
-        //     Sleep::sleep(5);
-        //     $products->merge($fetchProductsInCategory($categoryId, $page)['products']);
-        // }
+        if ($initialCategoryRequest->failed()) {
+            return collect();
+        }
+
+        for ($page = 1; $page < $initialCategoryRequest['page']['totalPages']; $page++) {
+            Sleep::sleep(5);
+            $fetchProductsInCategory($categoryId, $page);
+        }
 
         return AhProductData::factory()
-            ->withOptionalValues()
+            ->withoutOptionalValues()
             ->collect($products);
     }
 
@@ -88,9 +99,9 @@ class AhCrawler extends Crawler
 
     public function fetchProduct(mixed $identifier): Data
     {
-        return Cache::remember(self::class, 3600 * 24, fn() => $this->formatProduct(
+        return $this->formatProduct(
             $this->http()->get("https://api.ah.nl/mobile-services/product/detail/v4/fir/$identifier")
-        ));
+        );
     }
 
     public function formatProduct(mixed $raw): Data

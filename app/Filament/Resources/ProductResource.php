@@ -7,10 +7,12 @@ use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Filament\Resources\ProductResource\RelationManagers\DiscountsRelationManager;
 use App\Filament\Resources\ProductResource\RelationManagers\StoresRelationManager;
 use App\Models\Product;
+use App\Models\Store;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -67,7 +69,10 @@ class ProductResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('stores')
+                    ->multiple()
+                    ->options(Store::pluck('name', 'id'))
+                    ->relationship('stores', 'name')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

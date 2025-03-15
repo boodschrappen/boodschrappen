@@ -4,6 +4,7 @@ namespace App\Services\Crawlers;
 
 use App\Models\Store;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Data;
 
 abstract class Crawler
@@ -26,4 +27,10 @@ abstract class Crawler
     abstract function formatProduct(mixed $raw): Data;
 
     abstract function getStore(): Store;
+
+    protected function log(string $message, array $context)
+    {
+        printf($message);
+        Log::debug($message, $context);
+    }
 }

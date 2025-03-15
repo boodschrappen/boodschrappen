@@ -64,7 +64,7 @@ class AhProductData extends Data implements ProductData
 
     public static function fromModel(ProductStore $storeProduct): self
     {
-        return self::factory()->withOptionalValues()->from([
+        return self::factory()->withoutOptionalValues()->from([
             'webshopId' => $storeProduct->raw_identifier,
             'title' => $storeProduct->product->name,
             'descriptionHighlights' => $storeProduct->product->summary,

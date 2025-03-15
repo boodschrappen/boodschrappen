@@ -4,10 +4,12 @@ namespace App\Console\Commands;
 
 use App\Jobs\FetchProduct;
 use App\Models\ProductStore;
+use App\Models\Store;
 use App\Services\Crawlers\AhCrawler;
 use App\Services\Crawlers\Crawler;
 use App\Services\Crawlers\VomarCrawler;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -29,7 +31,7 @@ class CrawlCategories extends Command
 
     protected array $crawlers = [
         AhCrawler::class,
-        // VomarCrawler::class,
+        VomarCrawler::class,
     ];
 
     /**
@@ -49,9 +51,25 @@ class CrawlCategories extends Command
 
     protected function crawl(Crawler $crawler): void
     {
-        $products = $crawler->fetchAllProducts();
         $store = $crawler->getStore();
 
+        $crawler->fetchCategories()->each(
+            fn(mixed $category) => $this->processProducts(
+                $crawler,
+                $store,
+                $crawler->fetchProductsByCategory($category)
+            )
+        );
+
+        // TODO: (Soft) Delete outdated products
+        // ProductStore::query()
+        //     ->where('store_id', $store->id)
+        //     ->whereIn('product_id', )
+        //     ->delete();
+    }
+
+    protected function processProducts(Crawler $crawler, Store $store, Collection $products)
+    {
         // Find existing products. These will already be attached to the store.
         $existingIds = $store->storeProducts()->pluck('raw_identifier');
 
@@ -68,17 +86,11 @@ class CrawlCategories extends Command
 
         $store->products()->attach($newProducts);
 
-        // TODO: (Soft) Delete outdated products
-        // ProductStore::query()
-        //     ->where('store_id', $store->id)
-        //     ->whereIn('product_id', )
-        //     ->delete();
-
         // Push new products to the queue to fetch full product details.
         foreach ($newProducts as $newProduct) {
             FetchProduct::dispatch($crawler::class, new ProductStore($newProduct));
         }
 
-        Log::debug(count($newProducts));
+        Log::debug('New products: ' . json_encode($newProducts->keys()->toArray()));
     }
 }
