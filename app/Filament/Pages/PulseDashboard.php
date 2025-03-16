@@ -19,6 +19,13 @@ class PulseDashboard extends \Filament\Pages\Dashboard
 {
     use HasFiltersAction;
 
+    protected static string $routePath = '/dashboard';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->isAdmin() ?? false;
+    }
+
     public function getColumns(): int|string|array
     {
         return 12;
@@ -29,11 +36,11 @@ class PulseDashboard extends \Filament\Pages\Dashboard
         return [
             ActionGroup::make([
                 Action::make('1h')
-                    ->action(fn() => $this->redirect(route('filament.admin.pages.pulse-dashboard'))),
+                    ->action(fn() => $this->redirect(route('filament.app.pages.pulse-dashboard'))),
                 Action::make('24h')
-                    ->action(fn() => $this->redirect(route('filament.admin.pages.pulse-dashboard', ['period' => '24_hours']))),
+                    ->action(fn() => $this->redirect(route('filament.app.pages.pulse-dashboard', ['period' => '24_hours']))),
                 Action::make('7d')
-                    ->action(fn() => $this->redirect(route('filament.admin.pages.pulse-dashboard', ['period' => '7_days']))),
+                    ->action(fn() => $this->redirect(route('filament.app.pages.pulse-dashboard', ['period' => '7_days']))),
             ])
                 ->label(__('Filter'))
                 ->icon('heroicon-m-funnel')
