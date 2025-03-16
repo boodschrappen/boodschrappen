@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Filament\Resources\ProductResource\RelationManagers\DiscountsRelationManager;
 use App\Filament\Resources\ProductResource\RelationManagers\StoresRelationManager;
 use App\Models\Product;
@@ -11,17 +10,23 @@ use App\Models\Store;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $modelLabel = 'product';
+
+    protected static ?string $pluralModelLabel = 'producten';
 
     public static function form(Form $form): Form
     {
@@ -45,28 +50,28 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ColumnGroup::make('group', [
-                    Tables\Columns\TextColumn::make('name')
-                        ->searchable(),
-                    Tables\Columns\TextColumn::make('summary')
-                        ->wrap()
-                        ->searchable(),
-                    Tables\Columns\TextColumn::make('description')
-                        ->wrap()
-                        ->searchable(),
-                ]),
-                Tables\Columns\TextColumn::make('stores.name')
-                    ->badge()
-                    ->wrap()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\Layout\Split::make([
+                    Tables\Columns\ImageColumn::make('image')
+                        ->hidden(),
+
+                    Tables\Columns\Layout\Stack::make([
+                        Tables\Columns\TextColumn::make('name')
+                            ->weight(FontWeight::Bold)
+                            ->size(TextColumnSize::Large)
+                            ->searchable(),
+                        Tables\Columns\TextColumn::make('productStores.original_price')
+                            ->money('EUR'),
+                        Tables\Columns\TextColumn::make('stores.name')
+                            ->badge()
+                            ->wrap()
+                            ->searchable(),
+                    ]),
+                ])
+                    ->from('md'),
+            ])
+            ->contentGrid([
+                'md' => 2,
+                'lg' => 3,
             ])
             ->filters([
                 SelectFilter::make('stores')
@@ -76,11 +81,6 @@ class ProductResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
