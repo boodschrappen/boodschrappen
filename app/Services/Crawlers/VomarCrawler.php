@@ -5,7 +5,6 @@ namespace App\Services\Crawlers;
 use App\Data\VomarProductData;
 use App\Models\Store;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Spatie\LaravelData\Data;
 
