@@ -9,6 +9,8 @@ use App\Models\Product;
 use App\Models\Store;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
@@ -27,6 +29,35 @@ class ProductResource extends Resource
     protected static ?string $modelLabel = 'product';
 
     protected static ?string $pluralModelLabel = 'producten';
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\ImageEntry::make('image')
+                    ->hiddenLabel()
+                    ->height('auto')
+                    ->width('100%')
+                    ->alignCenter()
+                    ->extraImgAttributes(['class' => 'shadow rounded-xl overflow-hidden p-3 bg-white max-w-sm'])
+                    ->defaultImageUrl('https://static.ah.nl/dam/product/AHI_4354523130303539323232?revLabel=1&rendition=800x800_JPG_Q90&fileType=binary')
+                    ->columnSpan([
+                        'md' => 1
+                    ]),
+                InfoLists\Components\Group::make([
+                    Infolists\Components\TextEntry::make('name')
+                        ->hiddenLabel()
+                        ->weight(FontWeight::Bold)
+                        ->size('text-2xl'),
+                    Infolists\Components\TextEntry::make('summary')
+                        ->hiddenLabel()
+                        ->html(),
+                ])->columnSpan([
+                    'md' => 2
+                ])
+            ])
+            ->columns(['md' => 3, 'lg' => 3]);
+    }
 
     public static function form(Form $form): Form
     {
@@ -97,6 +128,7 @@ class ProductResource extends Resource
         return [
             'index' => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProduct::route('/create'),
+            'view' => Pages\ViewProduct::route('/{record}'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
     }
