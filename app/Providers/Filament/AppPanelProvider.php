@@ -3,21 +3,23 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\PulseDashboard;
-use Filament\Http\Middleware\Authenticate;
+use App\Filament\Resources\ProductResource;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AppPanelProvider extends PanelProvider
@@ -28,11 +30,13 @@ class AppPanelProvider extends PanelProvider
             ->default()
             ->id('app')
             ->spa()
+            ->homeUrl(fn() => ProductResource::getUrl())
+            ->login()
             ->topNavigation()
-            ->brandLogo('https://boodschrappen.nl/assets/icons/logo.svg')
+            ->favicon('/images/logo.svg')
+            ->brandLogo('/images/logo.svg')
             ->brandLogoHeight('2.5rem')
             ->brandName('Boodschrappen')
-            ->favicon('https://boodschrappen.nl/assets/icons/logo.svg')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -53,7 +57,11 @@ class AppPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-            ]);
+            ])
+            ->renderHook(
+                PanelsRenderHook::TOPBAR_END,
+                fn() => new HtmlString(Blade::render('<x-filament::button :href="filament()->getLoginUrl()" tag="a">Inloggen</x-filament::button>'))
+            );
     }
 
     public function boot()
