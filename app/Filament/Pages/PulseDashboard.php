@@ -21,6 +21,8 @@ class PulseDashboard extends \Filament\Pages\Dashboard
 
     protected static string $routePath = '/dashboard';
 
+    protected static ?int $navigationSort = -1;
+
     public static function canAccess(): bool
     {
         return auth()->user()?->isAdmin() ?? false;
