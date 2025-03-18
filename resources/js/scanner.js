@@ -1,3 +1,9 @@
+// Based on:
+// - https://github.com/zxing-cpp/zxing-cpp/blob/master/wrappers/wasm/demo_cam_reader.html
+// - https://github.com/Design-The-Box/barcode-field/blob/main/resources/js/barcode-scanner.js
+
+// TODO: Maybe do a cleanup?
+
 import { readBarcodes } from "zxing-wasm/reader";
 
 const readerOptions = {
