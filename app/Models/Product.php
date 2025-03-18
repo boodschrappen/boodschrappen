@@ -38,14 +38,6 @@ class Product extends Model
     }
 
     /**
-     * Get the name of the index associated with the model.
-     */
-    public function searchableAs(): string
-    {
-        return 'products_index';
-    }
-
-    /**
      * Get the indexable data array for the model.
      *
      * @return array<string, mixed>
@@ -55,6 +47,7 @@ class Product extends Model
         return [
             'id' => (int) $this->id,
             'name' => $this->name,
+            'image' => $this->image,
             'gtins' => (array) $this->gtins,
             'stores' => (array) $this->stores,
             'discounts' => (array) $this->discounts,

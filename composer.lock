@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3f088113577104770b0a78da6d8280d9",
+    "content-hash": "64185d2656bee49fce209707a29840d6",
     "packages": [
         {
             "name": "amphp/amp",
@@ -3076,6 +3076,85 @@
                 "source": "https://github.com/http-interop/http-factory-guzzle/tree/1.2.0"
             },
             "time": "2021-07-21T13:50:14+00:00"
+        },
+        {
+            "name": "kainiklas/filament-scout",
+            "version": "v0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kainiklas/filament-scout.git",
+                "reference": "f99200d67541d26489bc68477d3238114b205ab5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kainiklas/filament-scout/zipball/f99200d67541d26489bc68477d3238114b205ab5",
+                "reference": "f99200d67541d26489bc68477d3238114b205ab5",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0",
+                "laravel/scout": "^10.5",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "larastan/larastan": "^2.1",
+                "laravel/pint": "^1.13",
+                "orchestra/testbench": "^8.10|^9.0",
+                "pestphp/pest": "^2.10",
+                "pestphp/pest-plugin-arch": "^2.0",
+                "pestphp/pest-plugin-laravel": "^2.0",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "FilamentScout": "Kainiklas\\FilamentScout\\Facades\\FilamentScout"
+                    },
+                    "providers": [
+                        "Kainiklas\\FilamentScout\\FilamentScoutServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Kainiklas\\FilamentScout\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kai Niklas",
+                    "email": "kai.niklas@web.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Filament Plugin to integrate Scout into Global Search and Table Search.",
+            "homepage": "https://github.com/kainiklas/filament-scout",
+            "keywords": [
+                "filament",
+                "filament-scout",
+                "filamentphp",
+                "kainiklas",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/kainiklas/filament-scout/issues",
+                "source": "https://github.com/kainiklas/filament-scout"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/kainiklas",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-04-18T20:47:50+00:00"
         },
         {
             "name": "kelunik/certificate",
@@ -13053,12 +13132,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
