@@ -12,7 +12,22 @@ services:
         volumes:
             - .:/app:rw
         depends_on:
+            - redis
             - database
+            - meilisearch
+
+    queue:
+        container_name: boodschrappen-queue
+        image: boodschrappen-php-app
+        entrypoint: php artisan queue:listen
+        restart: unless-stopped
+        networks:
+            - internal
+        volumes:
+            - .:/app:rw
+        depends_on:
+            - database
+            - meilisearch
 
     database:
         image: postgres:17.2
