@@ -50,6 +50,8 @@ services:
             MEILI_NO_ANALYTICS: "true"
         volumes:
             - meilisearch-data:/data
+        ports:
+            - 7700:7700
         networks:
             - internal
         restart: always

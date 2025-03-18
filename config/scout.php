@@ -137,12 +137,13 @@ return [
     */
 
     'meilisearch' => [
-        'host' => env('MEILISEARCH_HOST', 'http://meilisearch   :7700'),
-        'key' => env('MEILISEARCH_KEY'),
+        'host' => env('MEILISEARCH_HOST', 'http://meilisearch:7700'),
+        'key' => env('MEILISEARCH_KEY', null),
         'index-settings' => [
-            // 'users' => [
-            //     'filterableAttributes'=> ['id', 'name', 'email'],
-            // ],
+            App\Models\Product::class => [
+                'filterableAttributes' => ['name', 'stores'],
+                'sortableAttributes' => ['price'],
+            ],
         ],
     ],
 
