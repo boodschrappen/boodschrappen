@@ -12,8 +12,7 @@ const readerOptions = {
     maxNumberOfSymbols: 1,
 };
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d", { willReadFrequently: true });
+let canvas, ctx;
 
 const video = document.createElement("video");
 video.autoplay = true;
@@ -33,9 +32,6 @@ function drawResult(code) {
     ctx.strokeStyle = "red";
     ctx.moveTo(code.position.topLeft.x, code.position.topLeft.y);
     ctx.lineTo(code.position.topRight.x, code.position.topRight.y);
-    ctx.lineTo(code.position.bottomRight.x, code.position.bottomRight.y);
-    ctx.lineTo(code.position.bottomLeft.x, code.position.bottomLeft.y);
-    ctx.lineTo(code.position.topLeft.x, code.position.topLeft.y);
     ctx.stroke();
 }
 
@@ -49,33 +45,18 @@ const processFrame = async function () {
     const [code] = await readBarcodes(imageData, readerOptions);
 
     if (code?.text) {
-        document.getElementById("result").value = escapeTags(code.text);
+        Livewire.navigate("/products?tableSearch=" + escapeTags(code.text));
         drawResult(code);
+        return;
     }
 
     requestAnimationFrame(processFrame);
 };
 
-function openScannerModal() {
-    // Open the Filament modal
-    window.dispatchEvent(
-        new CustomEvent("open-modal", {
-            detail: { id: "barcode-scanner-modal" },
-        })
-    );
-}
-
-function closeScannerModal() {
-    // Close the Filament modal
-    window.dispatchEvent(
-        new CustomEvent("close-modal", {
-            detail: { id: "barcode-scanner-modal" },
-        })
-    );
-    stopScanning(); // Make sure to stop the camera when the modal closes
-}
-
 function startScanner() {
+    canvas = document.getElementById("canvas");
+    ctx = canvas.getContext("2d", { willReadFrequently: true });
+
     // To ensure the camera switch, it is advisable to free up the media resources
     if (video.srcObject) {
         video.srcObject.getTracks().forEach((track) => track.stop());
@@ -113,16 +94,12 @@ function startCamera() {
 
 // Listen for modal opening and start camera
 window.addEventListener("open-modal", (event) => {
-    if (event.detail.id === "barcode-scanner-modal") {
-        console.log("Modal opened, starting camera");
-        startCamera();
-    }
+    console.debug("Modal opened, starting camera");
+    requestAnimationFrame(startCamera);
 });
 
 // Listen for modal closing and stop camera
 window.addEventListener("close-modal", (event) => {
-    if (event.detail.id === "barcode-scanner-modal") {
-        console.log("Modal closed, stopping camera");
-        stopScanning();
-    }
+    console.debug("Modal closed, stopping camera");
+    stopScanning();
 });
