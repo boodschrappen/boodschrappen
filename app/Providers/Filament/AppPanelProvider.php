@@ -10,6 +10,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Assets\Css;
+use Filament\Support\Assets\Js;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentColor;
@@ -81,7 +82,6 @@ class AppPanelProvider extends PanelProvider
 
         FilamentAsset::register([
             Css::make('custom', Vite::asset('resources/css/app.css', 'build')),
-            Css::make('scanner', Vite::asset('resources/js/scanner.js', 'build')),
         ]);
     }
 }

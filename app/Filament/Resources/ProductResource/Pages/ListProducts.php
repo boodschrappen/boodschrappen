@@ -38,18 +38,23 @@ class ListProducts extends ListRecords
                     return $meiliSearch->search($search, $options);
                 }
             )
-                ->keys()
-                ->join(',');
+                ->keys();
 
-            $query->join(
-                // Since we know for certain the keys are only ints and came from a trusted source, we can perform this dangerous action.
-                // Normally this could result in an SQL injection.
-                DB::raw('unnest(array[' . $keys . ']) with ordinality as l(id, idx)'),
-                'products.id',
-                '=',
-                'l.id'
-            )
-                ->orderBy('l.idx');
+            // Check if we have any results. Not performing this check will cause the postgres query to fail.
+            if ($keys->count() === 0) {
+                // We need to update the query so that no results are returned.
+                $query->whereRaw('1 = 0');
+            } else {
+                $query->join(
+                    // Since we know for certain the keys are only ints and came from a trusted source, we can perform this dangerous action.
+                    // Normally this could result in an SQL injection.
+                    DB::raw('unnest(array[' . $keys->join(',') . ']) with ordinality as l(id, idx)'),
+                    'products.id',
+                    '=',
+                    'l.id'
+                )
+                    ->orderBy('l.idx');
+            }
         }
 
         return $query;
