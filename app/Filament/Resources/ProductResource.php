@@ -17,6 +17,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class ProductResource extends Resource
 {
@@ -29,6 +30,15 @@ class ProductResource extends Resource
     protected static ?string $modelLabel = 'product';
 
     protected static ?string $pluralModelLabel = 'producten';
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'store_names' => 'Winkels',
+        ];
+    }
 
     public static function infolist(Infolist $infolist): Infolist
     {

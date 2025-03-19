@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Kainiklas\FilamentScout\FilamentScoutPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -65,7 +66,11 @@ class AppPanelProvider extends PanelProvider
             ->renderHook(
                 PanelsRenderHook::TOPBAR_END,
                 fn() => new HtmlString(Blade::render('<x-filament::button :href="filament()->getLoginUrl()" tag="a">Inloggen</x-filament::button>'))
-            );
+            )
+            ->plugins([
+                FilamentScoutPlugin::make()
+                    ->useMeilisearch()
+            ]);
     }
 
     public function boot()
