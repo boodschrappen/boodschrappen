@@ -2,8 +2,6 @@
 // - https://github.com/zxing-cpp/zxing-cpp/blob/master/wrappers/wasm/demo_cam_reader.html
 // - https://github.com/Design-The-Box/barcode-field/blob/main/resources/js/barcode-scanner.js
 
-// TODO: Maybe do a cleanup?
-
 import { readBarcodes } from "zxing-wasm/reader";
 
 const readerOptions = {
@@ -12,10 +10,10 @@ const readerOptions = {
     maxNumberOfSymbols: 1,
 };
 
-let canvas, ctx;
-
 const video = document.createElement("video");
 video.autoplay = true;
+
+let canvas, ctx, isScanning;
 
 function escapeTags(htmlStr) {
     return htmlStr
@@ -28,7 +26,7 @@ function escapeTags(htmlStr) {
 
 function drawResult(code) {
     ctx.beginPath();
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 2;
     ctx.strokeStyle = "red";
     ctx.moveTo(code.position.topLeft.x, code.position.topLeft.y);
     ctx.lineTo(code.position.topRight.x, code.position.topRight.y);
@@ -39,6 +37,10 @@ function drawResult(code) {
  * Read from image data
  */
 const processFrame = async function () {
+    if (!isScanning) {
+        return stopScanning();
+    }
+
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
@@ -47,13 +49,15 @@ const processFrame = async function () {
     if (code?.text) {
         Livewire.navigate("/products?tableSearch=" + escapeTags(code.text));
         drawResult(code);
-        return;
+        isScanning = false;
     }
 
     requestAnimationFrame(processFrame);
 };
 
 function startScanner() {
+    isScanning = true;
+
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d", { willReadFrequently: true });
 
@@ -82,24 +86,25 @@ function startScanner() {
 }
 
 function stopScanning() {
+    isScanning = false;
+
     if (video.srcObject) {
         video.srcObject.getTracks().forEach((track) => track.stop());
     }
     video.style.display = "none";
 }
 
-function startCamera() {
-    startScanner();
-}
-
-// Listen for modal opening and start camera
-window.addEventListener("open-modal", (event) => {
-    console.debug("Modal opened, starting camera");
-    requestAnimationFrame(startCamera);
+window.addEventListener("open-modal", () => {
+    console.debug("Modal opened, starting scanner");
+    requestAnimationFrame(startScanner);
 });
 
-// Listen for modal closing and stop camera
-window.addEventListener("close-modal", (event) => {
-    console.debug("Modal closed, stopping camera");
+window.addEventListener("close-modal", () => {
+    console.debug("Modal closed, stopping scanner");
+    stopScanning();
+});
+
+document.addEventListener("livewire:navigate", () => {
+    console.debug("Navigating, stopping scanner");
     stopScanning();
 });
