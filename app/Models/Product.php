@@ -51,6 +51,7 @@ class Product extends Model
             'gtins' => (array) $this->gtins,
             'stores' => (array) $this->stores,
             'discounts' => (array) $this->discounts,
+            'store_names' => $this->stores->pluck('name')->join(', ')
         ];
     }
 
