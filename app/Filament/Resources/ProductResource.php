@@ -90,6 +90,7 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->searchable()
             ->columns([
                 Tables\Columns\Layout\Split::make([
                     Tables\Columns\ImageColumn::make('image')
@@ -98,8 +99,7 @@ class ProductResource extends Resource
                     Tables\Columns\Layout\Stack::make([
                         Tables\Columns\TextColumn::make('name')
                             ->weight(FontWeight::Bold)
-                            ->size(TextColumnSize::Large)
-                            ->searchable(),
+                            ->size(TextColumnSize::Large),
                         Tables\Columns\TextColumn::make('productStores.original_price')
                             ->money('EUR'),
                         Tables\Columns\TextColumn::make('stores.name')
