@@ -44,6 +44,7 @@ class DekamarktProductData extends Data implements ProductData
             'name'        => $this->MainDescription,
             'summary'     => $this->SubDescription ?? $this->Brand ?? '',
             'description' => '',
+            'image'       => $this->ProductPicture ? $this->ProductPicture['Url'] : null,
         ]);
     }
 
