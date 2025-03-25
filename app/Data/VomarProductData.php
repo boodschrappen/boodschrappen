@@ -32,9 +32,10 @@ class VomarProductData extends Data implements ProductData
     {
         return new Product([
             'gtins'       => json_encode(array_merge([$this->eanPrimary], Arr::wrap($this->eanSynonyms))),
-            'name'        => $this->description,
+            'name'        => $this->detailedDescription,
             'summary'     => '',
-            'description' => $this->detailedDescription,
+            'description' => $this->description,
+            'image'       => $this->images ? 'https://d3vricquk1sjgf.cloudfront.net/articles/' . $this->images[0]['imageUrl'] : null
         ]);
     }
 

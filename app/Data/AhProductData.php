@@ -49,6 +49,7 @@ class AhProductData extends Data implements ProductData
             'name'        => $this->title,
             'summary'     => $this->descriptionHighlights,
             'description' => $this->descriptionHighlights,
+            'image'       => $this->images ? $this->images[0]['url'] : null,
         ]);
     }
 

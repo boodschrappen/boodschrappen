@@ -30,11 +30,15 @@ class JumboProductData extends Data implements ProductData
 
     public function toProduct(): Product
     {
+        $image = $this->imageInfo ? $this->imageInfo['primaryView'][0]['url'] : null;
+        $result = preg_match('/(\d+)_[^_]+\.png/i', $image, $gtins);
+
         return new Product([
-            'gtins'       => "[]",
+            'gtins'       => $result > 0 ? [$gtins[1]] : [],
             'name'        => $this->title,
             'summary'     => '',
             'description' => '',
+            'image'       => $image,
         ]);
     }
 
