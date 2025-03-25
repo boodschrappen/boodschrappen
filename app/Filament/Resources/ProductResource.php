@@ -94,8 +94,9 @@ class ProductResource extends Resource
             ->columns([
                 Tables\Columns\Layout\Split::make([
                     Tables\Columns\ImageColumn::make('image')
-                        ->hidden(),
-
+                        ->grow(false)
+                        ->size(60)
+                        ->extraImgAttributes(['loading' => 'lazy']),
                     Tables\Columns\Layout\Stack::make([
                         Tables\Columns\TextColumn::make('name')
                             ->weight(FontWeight::Bold)
