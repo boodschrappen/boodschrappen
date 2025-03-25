@@ -26,6 +26,7 @@ class TransformProducts extends Command
 
     protected array $stores = [
         'ah',
+        'dekamarkt',
         'dirk',
         'jumbo',
         'vomar',
