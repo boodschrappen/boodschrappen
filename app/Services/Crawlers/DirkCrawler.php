@@ -34,7 +34,7 @@ class DirkCrawler extends Crawler
         $products = collect();
 
         $response = $this->http()
-            ->get('https://api.dirk.nl/v1/assortmentcache/search/283', [
+            ->get('https://api.dirk.nl/v1/assortmentcache/search/284', [
                 'api_key' => '6d3a42a3-6d93-4f98-838d-bcc0ab2307fd',
                 'search' => $query,
                 'limit' => self::PAGE_SIZE,
