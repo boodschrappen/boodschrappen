@@ -7,6 +7,7 @@ use App\Models\ProductStore;
 use App\Models\Store;
 use App\Services\Crawlers\AhCrawler;
 use App\Services\Crawlers\Crawler;
+use App\Services\Crawlers\DirkCrawler;
 use App\Services\Crawlers\JumboCrawler;
 use App\Services\Crawlers\VomarCrawler;
 use Illuminate\Console\Command;
@@ -28,12 +29,13 @@ class CrawlCategories extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Crawl products in categories of the given stores.';
 
     protected array $crawlers = [
         AhCrawler::class,
         VomarCrawler::class,
         JumboCrawler::class,
+        DirkCrawler::class,
     ];
 
     /**
