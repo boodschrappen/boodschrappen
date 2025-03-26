@@ -94,8 +94,11 @@ class AhCrawler extends Crawler
 
     public function fetchProduct(mixed $identifier): Data
     {
+        $response = $this->http()->get("https://api.ah.nl/mobile-services/product/detail/v4/fir/$identifier");
+
         return $this->formatProduct(
-            $this->http()->get("https://api.ah.nl/mobile-services/product/detail/v4/fir/$identifier")
+            $response->collect('productCard')
+                ->merge($response->collect('tradeItem'))
         );
     }
 
