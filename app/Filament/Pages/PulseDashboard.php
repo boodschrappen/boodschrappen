@@ -19,9 +19,13 @@ class PulseDashboard extends \Filament\Pages\Dashboard
 {
     use HasFiltersAction;
 
-    protected static string $routePath = '/dashboard';
+    protected static ?string $title = 'Overzicht';
 
-    protected static ?int $navigationSort = -1;
+    protected static string $routePath = '/metrics';
+
+    protected static ?int $navigationSort = 100;
+
+    protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-line';
 
     public static function canAccess(): bool
     {
