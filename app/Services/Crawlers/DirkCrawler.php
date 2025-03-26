@@ -56,7 +56,13 @@ class DirkCrawler extends Crawler
 
     public function fetchProduct(mixed $identifier): Data
     {
-        return $this->formatProduct([]);
+        return $this->formatProduct(
+            $this->http()
+                ->get("https://api.dekamarkt.nl/v1/assortmentcache/284/$identifier", [
+                    'api_key' => '6d3a42a3-6d93-4f98-838d-bcc0ab2307fd',
+                ])
+                ->collect()
+        );
     }
 
     public function formatProduct(mixed $raw): Data
