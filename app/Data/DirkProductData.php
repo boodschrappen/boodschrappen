@@ -35,12 +35,17 @@ class DirkProductData extends Data implements ProductData
         public Optional|null|array  $ProductOffers = null,
         public Optional|null|array  $StoreAssortments = null,
         public Optional|null|bool   $IsSingleUsePlastic = null,
+
+        // Only available on details page
+        public Optional|null|array  $Nutrition = null,
+        public Optional|null|array  $ProductDeclarations = null,
+        public Optional|null|array  $ProductBarcodes = null,
     ) {}
 
     public function toProduct(): Product
     {
         return new Product([
-            'gtins'       => "[]",
+            'gtins'       => $this->ProductBarcodes ? [$this->ProductBarcodes[0]['Barcode']] : [],
             'name'        => $this->MainDescription,
             'summary'     => $this->SubDescription ?? $this->Brand ?? '',
             'description' => '',
@@ -52,7 +57,7 @@ class DirkProductData extends Data implements ProductData
     {
         return new ProductStore([
             'raw_identifier' => $this->ProductID,
-            'reduced_price' => null,
+            'reduced_price' => $this->ProductPrices[0]['Price'],
             'original_price' => $this->ProductPrices[0]['RegularPrice'],
             'raw' => json_encode($this->toArray()),
         ]);

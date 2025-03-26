@@ -12,9 +12,9 @@ class DekamarktProductData extends Data implements ProductData
 {
     public function __construct(
         public int                  $ProductID,
-        public string               $ProductNumber,
         public string               $MainDescription,
         public array                $ProductPrices,
+        public Optional|null|string $ProductNumber,
         public Optional|null|string $SubDescription = null,
         public Optional|null|string $CommercialContent = null,
         public Optional|null|string $MaxPerCustomer = null,
@@ -45,7 +45,7 @@ class DekamarktProductData extends Data implements ProductData
     public function toProduct(): Product
     {
         return new Product([
-            'gtins'       => "[]",
+            'gtins'       => $this->ProductBarcodes ? [$this->ProductBarcodes[0]['Barcode']] : [],
             'name'        => $this->MainDescription,
             'summary'     => $this->SubDescription ?? $this->Brand ?? '',
             'description' => '',
@@ -57,7 +57,7 @@ class DekamarktProductData extends Data implements ProductData
     {
         return new ProductStore([
             'raw_identifier' => $this->ProductID,
-            'reduced_price' => null,
+            'reduced_price' => $this->ProductPrices[0]['Price'],
             'original_price' => $this->ProductPrices[0]['RegularPrice'],
             'raw' => json_encode($this->toArray()),
         ]);
