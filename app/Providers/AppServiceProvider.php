@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use App\Services\Crawlers\AhCrawler;
+use App\Services\Crawlers\DekamarktCrawler;
+use App\Services\Crawlers\DirkCrawler;
+use App\Services\Crawlers\JumboCrawler;
 use App\Services\Crawlers\VomarCrawler;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,7 +29,13 @@ class AppServiceProvider extends ServiceProvider
 
     protected function registerCrawlers(): void
     {
-        $crawlers = [AhCrawler::class, VomarCrawler::class];
+        $crawlers = [
+            AhCrawler::class,
+            DekamarktCrawler::class,
+            DirkCrawler::class,
+            JumboCrawler::class,
+            VomarCrawler::class
+        ];
 
         foreach ($crawlers as $crawler) {
             $this->app->singleton($crawler, $crawler);
