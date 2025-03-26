@@ -12,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
@@ -46,11 +47,11 @@ class ProductResource extends Resource
             ->schema([
                 Infolists\Components\ImageEntry::make('image')
                     ->hiddenLabel()
+                    ->hidden(fn($state) => empty($state))
                     ->height('auto')
                     ->width('100%')
                     ->alignCenter()
                     ->extraImgAttributes(['class' => 'shadow rounded-xl overflow-hidden p-3 bg-white max-w-sm'])
-                    ->defaultImageUrl('https://static.ah.nl/dam/product/AHI_4354523130303539323232?revLabel=1&rendition=800x800_JPG_Q90&fileType=binary')
                     ->columnSpan([
                         'md' => 1
                     ]),
@@ -103,13 +104,14 @@ class ProductResource extends Resource
                             ->size(TextColumnSize::Large),
                         Tables\Columns\TextColumn::make('productStores.original_price')
                             ->money('EUR'),
-                        Tables\Columns\TextColumn::make('stores.name')
-                            ->badge()
-                            ->wrap()
-                            ->searchable(),
                     ]),
                 ])
                     ->from('md'),
+                Tables\Columns\TextColumn::make('stores.name')
+                    ->badge()
+                    ->wrap()
+                    ->searchable()
+                    ->alignRight(),
             ])
             ->contentGrid([
                 'md' => 2,
