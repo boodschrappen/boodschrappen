@@ -66,7 +66,7 @@ class AppPanelProvider extends PanelProvider
             ])
             ->renderHook(
                 PanelsRenderHook::TOPBAR_END,
-                fn() => new HtmlString(Blade::render('<x-filament::button :href="filament()->getLoginUrl()" tag="a">Inloggen</x-filament::button>'))
+                fn() => new HtmlString(Blade::render('@guest <x-filament::button :href="filament()->getLoginUrl()" tag="a">Inloggen</x-filament::button> @endguest'))
             )
             ->plugins([
                 FilamentScoutPlugin::make()

@@ -3,11 +3,9 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Resources\ProductResource\Pages\ListProducts;
-use App\Forms\Components\GlobalSearch;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\GlobalSearch\GlobalSearchResults;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
