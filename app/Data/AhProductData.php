@@ -40,12 +40,18 @@ class AhProductData extends Data implements ProductData
         public Optional|null|bool    $isSponsored = null,
         public Optional|null|bool    $isVirtualBundle = null,
         public Optional|null|array   $discountLabels = null,
+
+        public Optional|null|int     $gln = null,
+        public Optional|null|int     $gtin = null,
+        public Optional|null|array   $nutritionalInformation = null,
+        public Optional|null|string  $foodAndBeverageIngredientStatement = null,
+        public Optional|null|array   $allergenInformation = null,
     ) {}
 
     public function toProduct(): Product
     {
         return new Product([
-            'gtins'       => "[]",
+            'gtins'       => $this->gtin ? [$this->gtin] : [],
             'name'        => $this->title,
             'summary'     => $this->descriptionHighlights,
             'description' => $this->descriptionHighlights,
