@@ -6,7 +6,6 @@ use App\Data\DirkProductData;
 use App\Models\Store;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use Spatie\LaravelData\Data;
 
 class DirkCrawler extends Crawler
 {
@@ -54,7 +53,7 @@ class DirkCrawler extends Crawler
         return collect();
     }
 
-    public function fetchProduct(mixed $identifier): Data
+    public function fetchProduct(mixed $identifier): DirkProductData
     {
         return $this->formatProduct(
             $this->http()
@@ -65,7 +64,7 @@ class DirkCrawler extends Crawler
         );
     }
 
-    public function formatProduct(mixed $raw): Data
+    public function formatProduct(mixed $raw): DirkProductData
     {
         return DirkProductData::from($raw);
     }

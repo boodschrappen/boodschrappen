@@ -2,12 +2,12 @@
 
 namespace App\Services\Crawlers;
 
+use App\Contracts\ProductData;
 use App\Models\Store;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Spatie\LaravelData\Data;
 
-abstract class Crawler
+abstract class  Crawler
 {
     public function fetchAllProducts(): Collection
     {
@@ -22,9 +22,9 @@ abstract class Crawler
 
     abstract function fetchDiscounts(): Collection;
 
-    abstract function fetchProduct(mixed $identifier): Data;
+    abstract function fetchProduct(mixed $identifier): ProductData;
 
-    abstract function formatProduct(mixed $raw): Data;
+    abstract function formatProduct(mixed $raw): ProductData;
 
     abstract function getStore(): Store;
 

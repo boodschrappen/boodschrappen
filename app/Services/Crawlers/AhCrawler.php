@@ -7,7 +7,6 @@ use App\Models\Store;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Sleep;
-use Spatie\LaravelData\Data;
 
 class AhCrawler extends Crawler
 {
@@ -92,7 +91,7 @@ class AhCrawler extends Crawler
         return collect();
     }
 
-    public function fetchProduct(mixed $identifier): Data
+    public function fetchProduct(mixed $identifier): AhProductData
     {
         $response = $this->http()->get("https://api.ah.nl/mobile-services/product/detail/v4/fir/$identifier");
 
@@ -102,7 +101,7 @@ class AhCrawler extends Crawler
         );
     }
 
-    public function formatProduct(mixed $raw): Data
+    public function formatProduct(mixed $raw): AhProductData
     {
         return AhProductData::from($raw);
     }

@@ -6,7 +6,6 @@ use App\Data\DekamarktProductData;
 use App\Models\Store;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use Spatie\LaravelData\Data;
 
 class DekamarktCrawler extends Crawler
 {
@@ -54,7 +53,7 @@ class DekamarktCrawler extends Crawler
         return collect();
     }
 
-    public function fetchProduct(mixed $identifier): Data
+    public function fetchProduct(mixed $identifier): DekamarktProductData
     {
         return $this->formatProduct(
             $this->http()
@@ -65,7 +64,7 @@ class DekamarktCrawler extends Crawler
         );
     }
 
-    public function formatProduct(mixed $raw): Data
+    public function formatProduct(mixed $raw): DekamarktProductData
     {
         return DekamarktProductData::from($raw);
     }
