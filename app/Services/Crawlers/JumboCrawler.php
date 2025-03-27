@@ -66,7 +66,10 @@ class JumboCrawler extends Crawler
 
     public function fetchProduct(mixed $identifier): Data
     {
-        return $this->formatProduct([]);
+        return $this->formatProduct(
+            $this->http()->get("https://mobileapi.jumbo.com/v17/products/$identifier")
+                ->collect('product.data')
+        );
     }
 
     public function formatProduct(mixed $raw): Data
