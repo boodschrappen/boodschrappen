@@ -6,7 +6,6 @@ use App\Data\JumboProductData;
 use App\Models\Store;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use Spatie\LaravelData\Data;
 
 class JumboCrawler extends Crawler
 {
@@ -64,7 +63,7 @@ class JumboCrawler extends Crawler
         return collect();
     }
 
-    public function fetchProduct(mixed $identifier): Data
+    public function fetchProduct(mixed $identifier): JumboProductData
     {
         return $this->formatProduct(
             $this->http()->get("https://mobileapi.jumbo.com/v17/products/$identifier")
@@ -72,7 +71,7 @@ class JumboCrawler extends Crawler
         );
     }
 
-    public function formatProduct(mixed $raw): Data
+    public function formatProduct(mixed $raw): JumboProductData
     {
         return JumboProductData::from($raw);
     }

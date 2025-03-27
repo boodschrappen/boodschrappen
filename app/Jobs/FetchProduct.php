@@ -6,7 +6,6 @@ use App\Models\ProductStore;
 use App\Services\Crawlers\Crawler;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Support\Facades\Log;
 
 class FetchProduct implements ShouldQueue
 {
@@ -17,7 +16,7 @@ class FetchProduct implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(string $crawler, private ProductStore $product)
+    public function __construct(string $crawler, private ProductStore $storeProduct)
     {
         $this->crawler = app($crawler);
     }
@@ -27,6 +26,15 @@ class FetchProduct implements ShouldQueue
      */
     public function handle(): void
     {
-        Log::debug($this->crawler::class);
+        $productData = $this->crawler->fetchProduct($this->storeProduct->raw_identifier);
+
+        $mergedProductData = $this->crawler->formatProduct(array_merge(
+            json_decode($this->storeProduct->raw, true),
+            (array) $productData
+        ));
+
+        // Persist transformations
+        $this->storeProduct->product->fill($mergedProductData->toProduct()->toArray())->save();
+        $this->storeProduct->fill($mergedProductData->toStoreProduct()->toArray())->save();
     }
 }

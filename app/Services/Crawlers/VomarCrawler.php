@@ -6,7 +6,6 @@ use App\Data\VomarProductData;
 use App\Models\Store;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use Spatie\LaravelData\Data;
 
 class VomarCrawler extends Crawler
 {
@@ -44,7 +43,7 @@ class VomarCrawler extends Crawler
         return collect();
     }
 
-    public function fetchProduct(mixed $identifier): Data
+    public function fetchProduct(mixed $identifier): VomarProductData
     {
         return $this->formatProduct(
             $this->http()
@@ -53,7 +52,7 @@ class VomarCrawler extends Crawler
         );
     }
 
-    public function formatProduct(mixed $raw): Data
+    public function formatProduct(mixed $raw): VomarProductData
     {
         return VomarProductData::from($raw);
     }
