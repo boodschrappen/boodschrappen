@@ -46,7 +46,11 @@ class VomarCrawler extends Crawler
 
     public function fetchProduct(mixed $identifier): Data
     {
-        return $this->formatProduct([]);
+        return $this->formatProduct(
+            $this->http()
+                ->get('https://api.vomar.nl/api/v1/article/getDetailedArticle', ['articleNumber' => $identifier])
+                ->collect()
+        );
     }
 
     public function formatProduct(mixed $raw): Data
