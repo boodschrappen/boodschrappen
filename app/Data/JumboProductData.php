@@ -27,6 +27,7 @@ class JumboProductData extends Data implements ProductData
         public Optional|null|array   $allergens = null,
         public Optional|null|array   $surcharges = null,
 
+        // Only available on details page.
         public Optional|null|array   $prices = null,
         public Optional|null|array   $promotion = null,
         public Optional|null|array   $ingredientInfo = null,

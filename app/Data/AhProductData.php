@@ -41,7 +41,7 @@ class AhProductData extends Data implements ProductData
         public Optional|null|bool    $isVirtualBundle = null,
         public Optional|null|array   $discountLabels = null,
 
-        // Only available on details page
+        // Only available on details page.
         public Optional|null|int     $gln = null,
         public Optional|null|int     $gtin = null,
         public Optional|null|array   $nutritionalInformation = null,

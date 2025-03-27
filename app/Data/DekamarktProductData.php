@@ -36,7 +36,7 @@ class DekamarktProductData extends Data implements ProductData
         public Optional|null|array  $StoreAssortments = null,
         public Optional|null|bool   $IsSingleUsePlastic = null,
 
-        // Only available on details page
+        // Only available on details page.
         public Optional|null|array  $Nutrition = null,
         public Optional|null|array  $ProductDeclarations = null,
         public Optional|null|array  $ProductBarcodes = null,
