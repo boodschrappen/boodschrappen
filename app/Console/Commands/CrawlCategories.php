@@ -94,7 +94,7 @@ class CrawlCategories extends Command
 
         // Push new products to the queue to fetch full product details.
         foreach ($newProducts as $newProduct) {
-            FetchProduct::dispatch($crawler::class, new ProductStore($newProduct));
+            FetchProduct::dispatch(new ProductStore($newProduct));
         }
 
         Log::debug('New products: ' . json_encode($newProducts->keys()->toArray()));
