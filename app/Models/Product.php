@@ -20,6 +20,7 @@ class Product extends Model
 
     protected $casts = [
         'gtins' => 'array',
+        'nutrition' => 'array',
     ];
 
     public function discounts(): HasManyThrough

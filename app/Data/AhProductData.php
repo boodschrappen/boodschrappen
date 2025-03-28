@@ -57,6 +57,7 @@ class AhProductData extends Data implements ProductData
             'summary'     => $this->descriptionHighlights,
             'description' => $this->descriptionHighlights,
             'image'       => $this->images ? $this->images[0]['url'] : null,
+            'nutrition'   => $this->getNutritionalData(),
         ]);
     }
 
@@ -79,5 +80,36 @@ class AhProductData extends Data implements ProductData
             'currentPrice' => $storeProduct->reduced_price,
             'priceBeforeBonus' => $storeProduct->original_price,
         ]);
+    }
+
+    protected function getNutritionalData(): ?array
+    {
+        $info = $this->nutritionalInformation;
+
+        if (empty($info)) {
+            return null;
+        }
+
+        $headers = $info['nutrientHeaders'];
+        $rows = [];
+
+        foreach ($headers as $header) {
+            $details = $header['nutrientDetail'];
+
+            foreach ($details as $detail) {
+                $quantity = $detail['quantityContained'][0];
+
+                if (isset($rows[$detail['nutrientTypeCode']['label']])) {
+                    $rows[$detail['nutrientTypeCode']['label']][1] .= ' (' . $quantity['value'] . ' ' . $quantity['measurementUnitCode']['value'] . ')';
+                } else {
+                    $rows[$detail['nutrientTypeCode']['label']] = [
+                        $detail['nutrientTypeCode']['label'],
+                        $quantity['value'] . ' ' . $quantity['measurementUnitCode']['value'],
+                    ];
+                }
+            }
+        }
+
+        return $rows;
     }
 }

@@ -65,7 +65,12 @@ class ProductResource extends Resource
                         ->html(),
                 ])->columnSpan([
                     'md' => 2
-                ])
+                ]),
+
+                // TODO: Create dynamic table entry
+                // Infolists\Components\TextEntry::make('nutrition')
+                //     ->formatStateUsing(fn($state) => json_encode($state))
+                //     ->columnSpanFull()
             ])
             ->columns(['md' => 3, 'lg' => 3]);
     }
