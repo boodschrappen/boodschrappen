@@ -6,6 +6,7 @@ use App\Models\ProductStore;
 use App\Services\Crawlers\Crawler;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Str;
 
 class FetchProduct implements ShouldQueue
 {
@@ -16,9 +17,11 @@ class FetchProduct implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(string $crawler, private ProductStore $storeProduct)
+    public function __construct(private ProductStore $storeProduct)
     {
-        $this->crawler = app($crawler);
+        $crawlerClassName = Str::of($storeProduct->store->slug)->title()->prepend('App\Services\Crawlers\\')->append('Crawler')->toString();
+
+        $this->crawler = app($crawlerClassName);
     }
 
     /**
