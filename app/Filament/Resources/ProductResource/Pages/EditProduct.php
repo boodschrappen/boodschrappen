@@ -9,6 +9,7 @@ use App\Models\ProductStore;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Throwable;
 
 class EditProduct extends EditRecord
 {
@@ -19,17 +20,24 @@ class EditProduct extends EditRecord
         return [
             Actions\Action::make('fetch')
                 ->label('Product heropvragen')
-                ->action(fn(Product $record) => $record->productStores->each(
-                    function (ProductStore $productStore) {
-                        FetchProduct::dispatch($productStore);
+                ->action(function (Product $record) {
+                    try {
+                        $record->productStores->each(fn(ProductStore $productStore) => FetchProduct::dispatchSync($productStore));
 
                         Notification::make()
-                            ->title('Product wordt binnenkort opgehaald')
-                            ->body('Dit kan even duren.')
+                            ->title('Product is opgehaald')
                             ->success()
                             ->send();
+
+                        redirect(request()->header('Referer'));
+                    } catch (Throwable $e) {
+                        Notification::make()
+                            ->title('Er is iets misgegaan')
+                            ->body('Product kon niet worden opgehaald.')
+                            ->danger()
+                            ->send();
                     }
-                )),
+                }),
             Actions\DeleteAction::make(),
         ];
     }
