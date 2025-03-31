@@ -12,9 +12,9 @@ class DirkProductData extends Data implements ProductData
 {
     public function __construct(
         public int                  $ProductID,
-        public string               $ProductNumber,
         public string               $MainDescription,
         public array                $ProductPrices,
+        public Optional|null|string $ProductNumber,
         public Optional|null|string $SubDescription = null,
         public Optional|null|string $CommercialContent = null,
         public Optional|null|string $MaxPerCustomer = null,
@@ -30,6 +30,7 @@ class DirkProductData extends Data implements ProductData
         public Optional|null|string $PublicationAfter = null,
         public Optional|null|string $WeightOfPeicesInWeight = null,
         public Optional|null|array  $ProductPicture = null,
+        public Optional|null|array  $ProductPictures = null,
         public Optional|null|array  $Logos = null,
         public Optional|null|array  $WebSubGroups = null,
         public Optional|null|array  $ProductOffers = null,
@@ -46,10 +47,10 @@ class DirkProductData extends Data implements ProductData
     {
         return new Product([
             'gtins'       => $this->ProductBarcodes ? [$this->ProductBarcodes[0]['Barcode']] : [],
-            'name'        => $this->MainDescription,
-            'summary'     => $this->SubDescription ?? $this->Brand ?? '',
+            'name'        => $this->Brand . ' ' . $this->MainDescription,
+            'summary'     => $this->SubDescription ?? '',
             'description' => '',
-            'image'       => $this->ProductPicture ? $this->ProductPicture['Url'] : null,
+            'image'       => $this->ProductPictures ? $this->ProductPictures[0]['Url'] : $this->ProductPicture['Url'],
         ]);
     }
 

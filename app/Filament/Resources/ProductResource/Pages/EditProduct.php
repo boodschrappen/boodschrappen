@@ -33,7 +33,7 @@ class EditProduct extends EditRecord
                     } catch (Throwable $e) {
                         Notification::make()
                             ->title('Er is iets misgegaan')
-                            ->body('Product kon niet worden opgehaald.')
+                            ->body($e->getMessage())
                             ->danger()
                             ->send();
                     }

@@ -33,7 +33,7 @@ class DirkCrawler extends Crawler
         $products = collect();
 
         $response = $this->http()
-            ->get('https://api.dirk.nl/v1/assortmentcache/search/284', [
+            ->get('https://api.dirk.nl/v1/assortmentcache/search/318', [
                 'api_key' => '6d3a42a3-6d93-4f98-838d-bcc0ab2307fd',
                 'search' => $query,
                 'limit' => self::PAGE_SIZE,
@@ -57,7 +57,7 @@ class DirkCrawler extends Crawler
     {
         return $this->formatProduct(
             $this->http()
-                ->get("https://api.dekamarkt.nl/v1/assortmentcache/284/$identifier", [
+                ->get("https://api.dirk.nl/v1/assortmentcache/318/$identifier", [
                     'api_key' => '6d3a42a3-6d93-4f98-838d-bcc0ab2307fd',
                 ])
                 ->collect()

@@ -30,9 +30,6 @@ class ListProducts extends ListRecords
             $keys = static::$resource::getModel()::search(
                 $search,
                 function ($meiliSearch, string $search, array $options) {
-                    $options['attributesToHighlight'] = ['*'];
-                    $options['highlightPreTag'] = '<strong>';
-                    $options['highlightPostTag'] = '</strong>';
                     $options['limit'] = 1000;
 
                     return $meiliSearch->search($search, $options);
