@@ -28,8 +28,8 @@ class VomarProductData extends Data implements ProductData
         public Optional|null|bool    $discountDeal = null,
 
         // Only available on details page.
-        public Optional|null|bool    $nutritions = null,
-        public Optional|null|bool    $ingredients = null,
+        public Optional|null|array   $nutritions = null,
+        public Optional|null|array   $ingredients = null,
     ) {}
 
     public function toProduct(): Product

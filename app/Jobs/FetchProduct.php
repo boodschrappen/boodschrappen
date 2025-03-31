@@ -30,9 +30,8 @@ class FetchProduct implements ShouldQueue
     public function handle(): void
     {
         $productData = $this->crawler->fetchProduct($this->storeProduct->raw_identifier);
-
         $mergedProductData = $this->crawler->formatProduct(array_merge(
-            json_decode($this->storeProduct->raw, true),
+            is_string($this->storeProduct->raw) ? json_decode($this->storeProduct->raw, true) : $this->storeProduct->raw,
             (array) $productData
         ));
 

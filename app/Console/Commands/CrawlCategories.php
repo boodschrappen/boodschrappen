@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\FetchProduct;
+use App\Models\Product;
 use App\Models\ProductStore;
 use App\Models\Store;
 use App\Services\Crawlers\AhCrawler;
@@ -85,16 +86,21 @@ class CrawlCategories extends Command
             ->where(fn($product) => ! $existingIds->contains($product->toStoreProduct()->raw_identifier))
             ->mapWithKeys(function ($product) {
                 $savedProduct = $product->toProduct();
-                $savedProduct->save();
+
+                // We don't want to fill up the queue with individual product indexes.
+                Product::withoutSyncingToSearch(fn() => $savedProduct->save());
 
                 return [$savedProduct->id => $product->toStoreProduct()->toArray()];
             });
 
         $store->products()->attach($newProducts);
 
+        // Load the actual new store products.
+        $newStoreProducts = ProductStore::whereIn('product_id', $newProducts->keys());
+
         // Push new products to the queue to fetch full product details.
-        foreach ($newProducts as $newProduct) {
-            FetchProduct::dispatch(new ProductStore($newProduct));
+        foreach ($newStoreProducts as $newStoreProduct) {
+            FetchProduct::dispatch($newStoreProduct);
         }
 
         Log::debug('New products: ' . json_encode($newProducts->keys()->toArray()));
