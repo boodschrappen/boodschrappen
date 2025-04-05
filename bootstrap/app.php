@@ -19,6 +19,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->command(CrawlCategories::class)->dailyAt('08:00');
+        $schedule->command(CrawlCategories::class)->dailyAt('01:00');
     })
     ->create();
