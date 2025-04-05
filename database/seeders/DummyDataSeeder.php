@@ -22,7 +22,7 @@ class DummyDataSeeder extends Seeder
                     [
                         'original_price' => fake()->randomFloat(),
                         'raw_identifier' => random_int(0, 10000),
-                        'raw' => json_encode([])
+                        'raw' => [],
                     ]
                 )
                 ->create();

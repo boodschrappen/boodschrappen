@@ -60,7 +60,7 @@ class DekamarktProductData extends Data implements ProductData
             'raw_identifier' => $this->ProductID,
             'reduced_price' => $this->ProductPrices[0]['Price'],
             'original_price' => $this->ProductPrices[0]['RegularPrice'],
-            'raw' => json_encode($this->toArray()),
+            'raw' => $this->toArray(),
         ]);
     }
 

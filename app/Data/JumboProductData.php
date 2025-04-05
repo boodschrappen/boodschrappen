@@ -54,7 +54,7 @@ class JumboProductData extends Data implements ProductData
             'raw_identifier' => $this->id,
             'reduced_price' => null,
             'original_price' => $this->price,
-            'raw' => json_encode($this->toArray()),
+            'raw' => $this->toArray(),
         ]);
     }
 
