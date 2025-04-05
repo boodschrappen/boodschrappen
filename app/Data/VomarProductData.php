@@ -35,7 +35,7 @@ class VomarProductData extends Data implements ProductData
     public function toProduct(): Product
     {
         return new Product([
-            'gtins'       => json_encode(array_merge([$this->eanPrimary], Arr::wrap($this->eanSynonyms))),
+            'gtins'       => array_merge([$this->eanPrimary], Arr::wrap($this->eanSynonyms)),
             'name'        => $this->detailedDescription,
             'summary'     => '',
             'description' => $this->description,
@@ -49,7 +49,7 @@ class VomarProductData extends Data implements ProductData
             'raw_identifier' => $this->articleNumber,
             'reduced_price' => null,
             'original_price' => $this->price,
-            'raw' => json_encode($this->toArray()),
+            'raw' => $this->toArray(),
         ]);
     }
 

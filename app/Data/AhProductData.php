@@ -66,7 +66,7 @@ class AhProductData extends Data implements ProductData
             'raw_identifier' => $this->webshopId,
             'reduced_price' => $this->currentPrice,
             'original_price' => $this->priceBeforeBonus ?? $this->currentPrice,
-            'raw' => json_encode($this->toArray()),
+            'raw' => $this->toArray(),
         ]);
     }
 
