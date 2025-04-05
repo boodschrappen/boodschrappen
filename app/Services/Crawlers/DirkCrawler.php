@@ -25,7 +25,7 @@ class DirkCrawler extends Crawler
 
     public function fetchCategories(): Collection
     {
-        return collect(['a', 'e', 'i', 'o', 'u']);
+        return collect(range('a', 'z'));
     }
 
     public function fetchProductsByCategory(mixed $query): Collection
