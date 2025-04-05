@@ -96,7 +96,7 @@ class CrawlCategories extends Command
         $store->products()->attach($newProducts);
 
         // Load the actual new store products.
-        $newStoreProducts = ProductStore::whereIn('product_id', $newProducts->keys());
+        $newStoreProducts = ProductStore::whereIn('product_id', $newProducts->keys())->get();
 
         // Push new products to the queue to fetch full product details.
         foreach ($newStoreProducts as $newStoreProduct) {
