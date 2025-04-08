@@ -55,7 +55,7 @@ jobs:
         with:
           context: .
           load: true
-          tags: local/${{ github.repo }}:scan
+          tags: local/${{ github.repository }}:scan
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -63,7 +63,7 @@ jobs:
         uses: anchore/scan-action@v3
         id: scan
         with:
-          image: local/${{ github.repo }}:scan
+          image: local/${{ github.repository }}:scan
           only-fixed: true
           severity-cutoff: critical
           output-format: sarif
