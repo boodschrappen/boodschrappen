@@ -53,11 +53,12 @@ jobs:
       - name: Build container and export to local Docker
         uses: docker/build-push-action@v5
         with:
-          context: .
-          load: true
-          tags: local/${{ github.repository }}:scan
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          context: .
+          dockerfile: .docker/Dockerfile
+          load: true
+          tags: local/${{ github.repository }}:scan
 
       - name: Scan Image
         uses: anchore/scan-action@v3
@@ -80,6 +81,7 @@ jobs:
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          dockerfile: .docker/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: ${{ steps.meta.outputs.tags }}
