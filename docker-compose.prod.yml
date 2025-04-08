@@ -1,57 +1,53 @@
 ---
 services:
     app:
-        container_name: boodschrappen-app
-        build:
-            context: .
-            dockerfile: .docker/Dockerfile
+        image: ghcr.io/jappe999/boodschrappen:latest
         restart: unless-stopped
         networks:
             - internal
         ports:
-            - 8000:8000
+            - 80:80 # Remove this if you have a reverse proxy like Nginx or Traefik in front of it.
         volumes:
-            - .:/app:rw
+            - app-storage:/app/storage/app:rw
         depends_on:
             - redis
             - database
             - meilisearch
 
     queue:
-        container_name: boodschrappen-queue
-        image: boodschrappen-app
-        entrypoint: php artisan queue:listen
+        image: ghcr.io/jappe999/boodschrappen:latest
+        environment:
+            CONTAINER_ROLE: queue
         restart: unless-stopped
         networks:
             - internal
         volumes:
-            - .:/app:rw
+            - app-storage:/app/storage/app:rw
         depends_on:
             - database
             - meilisearch
         healthcheck:
             test: pgrep -f "queue:listen" > /dev/null || exit 1
-            start_period: 10s
+            start_period: 5s
 
     scheduler:
-        container_name: boodschrappen-scheduler
-        image: boodschrappen-app
-        entrypoint: php artisan schedule:work
+        image: ghcr.io/jappe999/boodschrappen:latest
+        environment:
+            CONTAINER_ROLE: scheduler
         restart: unless-stopped
         networks:
             - internal
         volumes:
-            - .:/app:rw
+            - app-storage:/app/storage/app:rw
         depends_on:
             - database
             - meilisearch
         healthcheck:
             test: pgrep -f "schedule:work" > /dev/null || exit 1
-            start_period: 10s
+            start_period: 5s
 
     database:
         image: postgres:17.2
-        container_name: boodschrappen-db
         restart: unless-stopped
         networks:
             - internal
@@ -85,8 +81,6 @@ services:
             MEILI_NO_ANALYTICS: "true"
         volumes:
             - meilisearch-data:/data
-        ports:
-            - 7700:7700
         networks:
             - internal
         restart: always
@@ -106,6 +100,7 @@ networks:
     internal:
 
 volumes:
+    app-storage:
     postgres-data:
     redis-data:
     meilisearch-data:
