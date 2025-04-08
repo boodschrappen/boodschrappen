@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -e
+
+role=${CONTAINER_ROLE:-app}
+env=${APP_ENV:-production}
+
+if [ $# -gt 0 ]; then
+    exec "$@"
+fi
+
+# Non-interactive migration. Will continue to run the app when migration fails.
+php artisan migrate --force --no-interaction --step --isolated=true || true
+
+if [ "$env" != "local" ]; then
+    echo "Caching configuration..."
+    php artisan config:cache
+fi
+
+if [ "$role" = "app" ]; then
+
+    php artisan octane:frankenphp --workers=4 --host=0.0.0.0 --port=8000
+
+elif [ "$role" = "queue" ]; then
+
+    echo "Running the queue..."
+    php artisan queue:work --verbose --no-interaction --tries=3 --timeout=90
+
+elif [ "$role" = "scheduler" ]; then
+
+    php artisan schedule:work --verbose --no-interaction
+
+else
+    echo "Could not match the container role \"$role\""
+    exit 1
+fi
