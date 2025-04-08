@@ -4,11 +4,13 @@ ARG COMPOSER_VERSION=latest
 
 FROM node:${NODE_VERSION} AS node
 
-COPY package*.json .
+WORKDIR /app
+
+COPY . .
 
 RUN npm ci \
     && npm run build \
-    && npm run prune --production
+    && npm prune --production
 
 FROM composer:${COMPOSER_VERSION} AS vendor
 
@@ -27,13 +29,14 @@ RUN install-php-extensions \
     exif \
     redis
 
+WORKDIR /app
+
 COPY --from=vendor /usr/bin/composer /usr/bin/
-COPY --from=node /usr/lib /usr/lib
+
+COPY --from=node /app .
 
 COPY .docker/php-conf/opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
-COPY . .
 
-WORKDIR /app
 
 # The config:cache command is executed at runtime to load environment variables.
 RUN composer install --no-interaction --optimize-autoloader --no-dev \
