@@ -1,28 +1,23 @@
 ARG PHP_VERSION=8.4
-ARG NODE_VERSION=20
+ARG NODE_VERSION=22
 ARG COMPOSER_VERSION=latest
 
 FROM node:${NODE_VERSION} AS node
 
 FROM composer:${COMPOSER_VERSION} AS vendor
 
-FROM dunglas/frankenphp:1.4-php${PHP_VERSION}
+FROM dunglas/frankenphp:1.5-php${PHP_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN install-php-extensions \
     pcntl \
-	gd \
-	intl \
-	zip \
-    bcmath \
-    ctype \
+    pdo_mysql \
+    gd \
     intl \
-    pdo \
-    pdo_pgsql \
-    posix \
-    session \
-    xml \
+    zip \
+    calendar \
+    bcmath \
     exif \
     redis
 
