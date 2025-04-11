@@ -4,7 +4,7 @@ services:
         container_name: boodschrappen-app
         build:
             context: .
-            dockerfile: .docker/Dockerfile
+            dockerfile: .docker/development.Dockerfile
         restart: unless-stopped
         networks:
             - internal
