@@ -1,7 +1,7 @@
 ---
 services:
     app:
-        image: ghcr.io/jappe999/boodschrappen:latest
+        image: ghcr.io/boodschrappen/boodschrappen:latest
         restart: unless-stopped
         networks:
             - internal
@@ -15,7 +15,7 @@ services:
             - meilisearch
 
     queue:
-        image: ghcr.io/jappe999/boodschrappen:latest
+        image: ghcr.io/boodschrappen/boodschrappen:latest
         environment:
             CONTAINER_ROLE: queue
         restart: unless-stopped
@@ -31,7 +31,7 @@ services:
             start_period: 5s
 
     scheduler:
-        image: ghcr.io/jappe999/boodschrappen:latest
+        image: ghcr.io/boodschrappen/boodschrappen:latest
         environment:
             CONTAINER_ROLE: scheduler
         restart: unless-stopped
