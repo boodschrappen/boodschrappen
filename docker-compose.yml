@@ -19,14 +19,17 @@ services:
 
     queue:
         container_name: boodschrappen-queue
-        image: boodschrappen-app
-        entrypoint: php artisan queue:listen
+        build:
+            context: .
+            dockerfile: .docker/development.Dockerfile
+        command: php artisan queue:listen
         restart: unless-stopped
         networks:
             - internal
         volumes:
             - .:/app:rw
         depends_on:
+            - redis
             - database
             - meilisearch
         healthcheck:
@@ -35,14 +38,17 @@ services:
 
     scheduler:
         container_name: boodschrappen-scheduler
-        image: boodschrappen-app
-        entrypoint: php artisan schedule:work
+        build:
+            context: .
+            dockerfile: .docker/development.Dockerfile
+        command: php artisan schedule:work
         restart: unless-stopped
         networks:
             - internal
         volumes:
             - .:/app:rw
         depends_on:
+            - redis
             - database
             - meilisearch
         healthcheck:
