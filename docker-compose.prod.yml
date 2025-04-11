@@ -27,7 +27,7 @@ services:
             - database
             - meilisearch
         healthcheck:
-            test: pgrep -f "queue:listen" > /dev/null || exit 1
+            test: pgrep -f "queue:work" > /dev/null || exit 1
             start_period: 5s
 
     scheduler:
