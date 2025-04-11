@@ -2,26 +2,19 @@ ARG NODE_VERSION=22
 
 FROM node:${NODE_VERSION} AS node
 
-FROM ghcr.io/jappe999/boodschrappen:edge
+FROM ghcr.io/boodschrappen/boodschrappen:edge
 
 COPY --from=node /usr/lib /usr/lib
 COPY --from=node /usr/local/lib /usr/local/lib
 COPY --from=node /usr/local/include /usr/local/include
 COPY --from=node /usr/local/bin /usr/local/bin
 
-# Install ease of use packages
-RUN apt update && apt install -y git bash zsh
-
-# Setup workstation for user
-RUN sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
-    && git clone https://github.com/powerline/fonts.git --depth=1 \
-    && cd fonts && ./install.sh \
-    && cd .. && rm -rf fonts
-
 COPY package*.json .
 
 RUN npm i \
-    && composer optimize:clear \
+    # Undo optimizations done in the base image.
+    && php artisan optimize:clear \
+    # We do need to cache the icon set though
     && php artisan icons:cache
 
-ENTRYPOINT ["php", "artisan", "octane:start", "--watch", "--server=frankenphp", "--host=0.0.0.0", "--port=8000"]
+CMD ["php", "artisan", "octane:start", "--watch", "--server=frankenphp", "--host=0.0.0.0", "--port=8000"]

@@ -8,9 +8,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm ci \
-    && npm run build \
-    && npm prune --production
+RUN npm ci && npm run build
 
 FROM composer:${COMPOSER_VERSION} AS vendor
 
@@ -29,14 +27,12 @@ RUN install-php-extensions \
     exif \
     redis
 
-WORKDIR /app
-
 COPY --from=vendor /usr/bin/composer /usr/bin/
-
-COPY --from=node /app .
-
 COPY .docker/php-conf/opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
+COPY .docker/start-container /usr/local/bin/start-container
+COPY --from=node /app /app
 
+WORKDIR /app
 
 # The config:cache command is executed at runtime to load environment variables.
 RUN composer install --no-interaction --optimize-autoloader --no-dev \
