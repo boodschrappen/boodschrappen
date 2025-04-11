@@ -19,18 +19,15 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN install-php-extensions \
     pcntl \
     pdo_pgsql \
-    gd \
     intl \
     zip \
-    calendar \
-    bcmath \
     exif \
     redis
 
 COPY --from=vendor /usr/bin/composer /usr/bin/
 COPY .docker/php-conf/opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 COPY .docker/start-container /usr/local/bin/start-container
-COPY --from=node /app /app
+COPY --from=node /app/public/build /app/public/build
 
 WORKDIR /app
 
