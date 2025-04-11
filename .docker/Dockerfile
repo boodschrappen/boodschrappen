@@ -27,7 +27,7 @@ RUN install-php-extensions \
 COPY --from=vendor /usr/bin/composer /usr/bin/
 COPY .docker/php-conf/opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 COPY .docker/start-container /usr/local/bin/start-container
-COPY --from=node /app/public/build /app/public/build
+COPY --from=node /app /app
 
 WORKDIR /app
 
