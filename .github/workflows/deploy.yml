@@ -12,9 +12,41 @@ on:
 permissions:
   contents: write
   packages: write
-  security-events: write
 
 jobs:
+  scan-image:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build container and export to local Docker
+        uses: docker/build-push-action@v5
+        with:
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          context: .
+          file: .docker/Dockerfile
+          load: true
+          tags: local/${{ github.repository }}:scan
+
+      - name: Scan Image
+        uses: anchore/scan-action@v3
+        id: scan
+        with:
+          image: local/${{ github.repository }}:scan
+          only-fixed: true
+          severity-cutoff: critical
+          output-format: sarif
+
+      - name: Upload Anchore scan SARIF report
+        uses: github/codeql-action/upload-sarif@v3
+        if: ${{ !cancelled() }}
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
+
   publish-docker-image:
     runs-on: ubuntu-latest
     steps:
@@ -49,31 +81,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build container and export to local Docker
-        uses: docker/build-push-action@v5
-        with:
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          context: .
-          file: .docker/Dockerfile
-          load: true
-          tags: local/${{ github.repository }}:scan
-
-      - name: Scan Image
-        uses: anchore/scan-action@v3
-        id: scan
-        with:
-          image: local/${{ github.repository }}:scan
-          only-fixed: true
-          severity-cutoff: critical
-          output-format: sarif
-
-      - name: Upload Anchore scan SARIF report
-        uses: github/codeql-action/upload-sarif@v3
-        if: ${{ !cancelled() }}
-        with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
 
       - name: Build container and push to GitHub Container Registry
         uses: docker/build-push-action@v6
