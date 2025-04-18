@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Product;
+use App\Models\Store;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,8 +23,8 @@ return new class extends Migration
             $table->json('raw');
             $table->string('raw_identifier');
 
-            $table->unsignedBigInteger('product_id')->constrained('products')->cascadeOnDelete();
-            $table->unsignedBigInteger('store_id')->constrained('stores')->cascadeOnDelete();
+            $table->foreignIdFor(Product::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Store::class)->constrained()->cascadeOnDelete();
 
             $table->timestamps();
         });
