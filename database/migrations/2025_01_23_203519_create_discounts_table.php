@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ProductStore;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->date('start');
             $table->date('end');
-            $table->unsignedBigInteger('product_store_id')->constrained('product_stores')->cascadeOnDelete();
+            $table->foreignIdFor(ProductStore::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
