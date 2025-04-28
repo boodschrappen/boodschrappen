@@ -4,14 +4,13 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\FrontPage;
 use App\Filament\Pages\PulseDashboard;
+use Filament\FontProviders\LocalFontProvider;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Assets\Css;
-use Filament\Support\Assets\Js;
-use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentColor;
 use Filament\View\PanelsRenderHook;
@@ -68,6 +67,7 @@ class AppPanelProvider extends PanelProvider
                 PanelsRenderHook::TOPBAR_END,
                 fn() => new HtmlString(Blade::render('@guest <x-filament::button :href="filament()->getLoginUrl()" tag="a">Inloggen</x-filament::button> @endguest'))
             )
+            ->font('sans-serif', provider: LocalFontProvider::class)
             ->plugins([
                 FilamentScoutPlugin::make()
                     ->useMeilisearch()
