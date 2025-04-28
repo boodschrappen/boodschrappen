@@ -53,7 +53,7 @@ class JumboProductData extends Data implements ProductData
         return new ProductStore([
             'raw_identifier' => $this->id,
             'reduced_price' => null,
-            'original_price' => $this->price,
+            'original_price' => $this->price ?: ($this->prices['price']['amount'] / 100),
             'raw' => $this->toArray(),
         ]);
     }
