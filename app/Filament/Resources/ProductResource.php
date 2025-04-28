@@ -6,13 +6,11 @@ use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers\DiscountsRelationManager;
 use App\Filament\Resources\ProductResource\RelationManagers\StoresRelationManager;
 use App\Models\Product;
-use App\Models\Store;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
-use Filament\Support\Colors\Color;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
@@ -108,7 +106,6 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('stores.name')
                     ->badge()
                     ->wrap()
-                    ->searchable()
                     ->alignRight(),
             ])
             ->contentGrid([
@@ -116,9 +113,10 @@ class ProductResource extends Resource
                 'lg' => 3,
             ])
             ->filters([
-                SelectFilter::make('stores')
+                SelectFilter::make('store_id')
+                    ->label('Store')
                     ->multiple()
-                    ->options(Store::pluck('name', 'id'))
+                    ->preload()
                     ->relationship('stores', 'name')
             ])
             ->actions([

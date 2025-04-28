@@ -7,8 +7,6 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class StoresRelationManager extends RelationManager
 {
@@ -28,10 +26,20 @@ class StoresRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('name')
+            ->heading('Winkels')
+            ->defaultSort('original_price')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('original_price'),
-                Tables\Columns\TextColumn::make('reduced_price'),
+                Tables\Columns\TextColumn::make('name')
+                    ->sortable()
+                    ->label('Naam'),
+                Tables\Columns\TextColumn::make('original_price')
+                    ->sortable()
+                    ->label('Originele prijs')
+                    ->money('EUR'),
+                Tables\Columns\TextColumn::make('reduced_price')
+                    ->sortable()
+                    ->label('Gereduceerde prijs')
+                    ->money('EUR'),
             ])
             ->filters([
                 //
