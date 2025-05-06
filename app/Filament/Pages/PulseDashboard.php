@@ -19,17 +19,17 @@ class PulseDashboard extends \Filament\Pages\Dashboard
 {
     use HasFiltersAction;
 
-    protected static ?string $title = 'Overzicht';
+    protected static ?string $title = "Overzicht";
 
-    protected static string $routePath = '/metrics';
+    protected static string $routePath = "/metrics";
 
     protected static ?int $navigationSort = 100;
 
-    protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-line';
+    protected static ?string $navigationIcon = "heroicon-o-presentation-chart-line";
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->isAdmin() ?? false;
+        return auth()->user()?->is_admin ?? false;
     }
 
     public function getColumns(): int|string|array
@@ -41,18 +41,31 @@ class PulseDashboard extends \Filament\Pages\Dashboard
     {
         return [
             ActionGroup::make([
-                Action::make('1h')
-                    ->action(fn() => $this->redirect(route('filament.app.pages.pulse-dashboard'))),
-                Action::make('24h')
-                    ->action(fn() => $this->redirect(route('filament.app.pages.pulse-dashboard', ['period' => '24_hours']))),
-                Action::make('7d')
-                    ->action(fn() => $this->redirect(route('filament.app.pages.pulse-dashboard', ['period' => '7_days']))),
+                Action::make("1h")->action(
+                    fn() => $this->redirect(
+                        route("filament.app.pages.pulse-dashboard")
+                    )
+                ),
+                Action::make("24h")->action(
+                    fn() => $this->redirect(
+                        route("filament.app.pages.pulse-dashboard", [
+                            "period" => "24_hours",
+                        ])
+                    )
+                ),
+                Action::make("7d")->action(
+                    fn() => $this->redirect(
+                        route("filament.app.pages.pulse-dashboard", [
+                            "period" => "7_days",
+                        ])
+                    )
+                ),
             ])
-                ->label(__('Filter'))
-                ->icon('heroicon-m-funnel')
+                ->label(__("Filter"))
+                ->icon("heroicon-m-funnel")
                 ->size(ActionSize::Small)
-                ->color('gray')
-                ->button()
+                ->color("gray")
+                ->button(),
         ];
     }
 
@@ -66,7 +79,7 @@ class PulseDashboard extends \Filament\Pages\Dashboard
             PulseQueues::class,
             PulseSlowQueries::class,
             PulseSlowRequests::class,
-            PulseSlowOutGoingRequests::class
+            PulseSlowOutGoingRequests::class,
         ];
     }
 }
