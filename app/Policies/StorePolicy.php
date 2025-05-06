@@ -12,7 +12,7 @@ class StorePolicy
      */
     public function create(?User $user): bool
     {
-        return $user?->isAdmin() ?? false;
+        return $user?->is_admin ?? false;
     }
 
     /**
@@ -20,7 +20,7 @@ class StorePolicy
      */
     public function update(?User $user, Store $store): bool
     {
-        return $user?->isAdmin() ?? false;
+        return $user?->is_admin ?? false;
     }
 
     /**
@@ -28,7 +28,7 @@ class StorePolicy
      */
     public function delete(?User $user, Store $store): bool
     {
-        return $user?->isAdmin() ?? false;
+        return $user?->is_admin ?? false;
     }
 
     /**
@@ -36,7 +36,7 @@ class StorePolicy
      */
     public function restore(?User $user, Store $store): bool
     {
-        return $user?->isAdmin() ?? false;
+        return $user?->is_admin ?? false;
     }
 
     /**
@@ -44,6 +44,6 @@ class StorePolicy
      */
     public function forceDelete(?User $user, Store $store): bool
     {
-        return $user?->isAdmin() ?? false;
+        return $user?->is_admin ?? false;
     }
 }

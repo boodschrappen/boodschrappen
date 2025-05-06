@@ -12,7 +12,7 @@ class DiscountPolicy
      */
     public function create(?User $user): bool
     {
-        return $user?->isAdmin() ?? false;
+        return $user?->is_admin ?? false;
     }
 
     /**
@@ -20,7 +20,7 @@ class DiscountPolicy
      */
     public function update(?User $user, Discount $discount): bool
     {
-        return $user?->isAdmin() ?? false;
+        return $user?->is_admin ?? false;
     }
 
     /**
@@ -28,7 +28,7 @@ class DiscountPolicy
      */
     public function delete(?User $user, Discount $discount): bool
     {
-        return $user?->isAdmin() ?? false;
+        return $user?->is_admin ?? false;
     }
 
     /**
@@ -36,7 +36,7 @@ class DiscountPolicy
      */
     public function restore(?User $user, Discount $discount): bool
     {
-        return $user?->isAdmin() ?? false;
+        return $user?->is_admin ?? false;
     }
 
     /**
@@ -44,6 +44,6 @@ class DiscountPolicy
      */
     public function forceDelete(?User $user, Discount $discount): bool
     {
-        return $user?->isAdmin() ?? false;
+        return $user?->is_admin ?? false;
     }
 }
