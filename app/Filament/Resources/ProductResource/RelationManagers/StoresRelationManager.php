@@ -11,6 +11,8 @@ use Filament\Tables\Table;
 class StoresRelationManager extends RelationManager
 {
     protected static string $relationship = 'stores';
+    
+    protected static bool $isLazy = false;
 
     public function form(Form $form): Form
     {
