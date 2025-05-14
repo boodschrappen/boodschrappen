@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.2",
         "dotswan/filament-laravel-pulse": "^1.1",
+        "fauzie811/filament-list-entry": "^1.0",
         "filament/filament": "^3.2",
         "http-interop/http-factory-guzzle": "^1.2",
         "joaopaulolndev/filament-edit-profile": "^1.0",

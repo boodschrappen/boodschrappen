@@ -16,10 +16,9 @@ interface ProductData
 
     public function toStoreProduct(): ProductStore;
 
-    public function nutrients(): NutrientsData;
+    public function nutrients(): NutrientsData|null;
 
-    /** @return Array<string> */
-    public function ingredients(): array;
+    public function ingredients(): string|null;
 
-    public function allergens(): AllergensData;
+    public function allergens(): AllergensData|null;
 }

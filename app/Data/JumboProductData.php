@@ -59,6 +59,9 @@ class JumboProductData extends Data implements ProductData
             "summary" => "",
             "description" => "",
             "image" => $image,
+            "ingredients" => $this->ingredients(),
+            "nutrients" => $this->nutrients(),
+            "allergens" => $this->allergens()?->allergens,
         ]);
     }
 
@@ -73,8 +76,12 @@ class JumboProductData extends Data implements ProductData
         ]);
     }
 
-    public function nutrients(): NutrientsData
+    public function nutrients(): NutrientsData|null
     {
+        if (empty($this->nutritionalInformation)) {
+            return null;
+        }
+
         $entries =
             $this->nutritionalInformation[0]["nutritionalData"]["entries"];
 
@@ -91,16 +98,27 @@ class JumboProductData extends Data implements ProductData
         ]);
     }
 
-    public function ingredients(): array
+    public function ingredients(): string|null
     {
-        return array_map(
-            fn($ingredient) => $ingredient["name"],
-            $this->ingredientInfo[0]["ingredients"]
+        if (empty($this->ingredientInfo)) {
+            return null;
+        }
+
+        return implode(
+            ", ",
+            array_map(
+                fn($ingredient) => $ingredient["name"],
+                $this->ingredientInfo[0]["ingredients"]
+            )
         );
     }
 
-    public function allergens(): AllergensData
+    public function allergens(): AllergensData|null
     {
+        if (empty($this->allergyText)) {
+            return null;
+        }
+
         return new AllergensData([$this->allergyText]);
     }
 }

@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\ProductStore;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class TransformProducts extends Command
@@ -22,22 +21,16 @@ class TransformProducts extends Command
      *
      * @var string
      */
-    protected $description = '(re-)transform one or more products';
+    protected $description = "(re-)transform one or more products";
 
-    protected array $stores = [
-        'ah',
-        'dekamarkt',
-        'dirk',
-        'jumbo',
-        'vomar',
-    ];
+    protected array $stores = ["ah", "dekamarkt", "dirk", "jumbo", "vomar"];
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        if ($slug = $this->argument('storeSlug')) {
+        if ($slug = $this->argument("storeSlug")) {
             return $this->transform($slug);
         }
 
@@ -48,14 +41,20 @@ class TransformProducts extends Command
 
     public function transform(string $slug)
     {
-        $dataClass = Str::of($slug)->title()->prepend('App\Data\\')->append('ProductData')->toString();
+        $dataClass = Str::of($slug)
+            ->title()
+            ->prepend("App\Data\\")
+            ->append("ProductData")
+            ->toString();
 
         // Fetch raw values from database
         ProductStore::query()
-            ->whereRelation('store', 'slug', $slug)
-            ->with('product')
+            ->whereRelation("store", "slug", $slug)
+            ->with("product")
             ->chunk(1000, function ($storeProducts) use ($dataClass) {
-                $this->line('Transforming ' . $storeProducts->count() . ' products.');
+                $this->line(
+                    "Transforming " . $storeProducts->count() . " products."
+                );
 
                 $storeProducts->each(function ($storeProduct) use ($dataClass) {
                     $rawData = $dataClass::from($storeProduct->raw);
@@ -65,7 +64,9 @@ class TransformProducts extends Command
                     $newStoreProduct = $rawData->toStoreProduct();
 
                     // Persist transformations
-                    $storeProduct->product->fill($newProduct->toArray())->save();
+                    $storeProduct->product
+                        ->fill($newProduct->toArray())
+                        ->save();
                     $storeProduct->fill($newStoreProduct->toArray())->save();
                 });
             });

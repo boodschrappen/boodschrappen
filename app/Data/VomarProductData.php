@@ -61,6 +61,9 @@ class VomarProductData extends Data implements ProductData
                 ? "https://d3vricquk1sjgf.cloudfront.net/articles/" .
                     $this->images[0]["imageUrl"]
                 : null,
+            "ingredients" => $this->ingredients(),
+            "nutrients" => $this->nutrients(),
+            "allergens" => $this->allergens()?->allergens,
         ]);
     }
 
@@ -74,7 +77,7 @@ class VomarProductData extends Data implements ProductData
         ]);
     }
 
-    public function nutrients(): NutrientsData
+    public function nutrients(): NutrientsData|null
     {
         return NutrientsData::from([
             "headings" => array_merge(
@@ -82,19 +85,21 @@ class VomarProductData extends Data implements ProductData
                 $this->nutritions["headings"] ?? []
             ),
             "rows" => array_map(
-                fn($row) => [$row["name"], ...$row["values"]],
+                fn($row) => [$row["name"] ?? "", ...$row["values"]],
                 $this->nutritions["rows"] ?? []
             ),
         ]);
     }
 
-    public function ingredients(): array
+    public function ingredients(): string|null
     {
-        return $this->ingredients;
+        return $this->ingredients ? implode(", ", $this->ingredients) : null;
     }
 
-    public function allergens(): AllergensData
+    public function allergens(): AllergensData|null
     {
-        return new AllergensData([$this->allergiesWarning]);
+        return $this->allergiesWarning
+            ? new AllergensData([$this->allergiesWarning])
+            : null;
     }
 }

@@ -16,10 +16,12 @@ class Product extends Model
     use Searchable;
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $guarded = ["id"];
 
     protected $casts = [
-        'gtins' => 'array',
+        "gtins" => "array",
+        "nutrients" => "array",
+        "allergens" => "array",
     ];
 
     public function discounts(): HasManyThrough
@@ -29,8 +31,10 @@ class Product extends Model
 
     public function stores(): BelongsToMany
     {
-        return $this->belongsToMany(Store::class, 'product_stores')
-            ->withPivot('original_price', 'reduced_price');
+        return $this->belongsToMany(Store::class, "product_stores")->withPivot(
+            "original_price",
+            "reduced_price"
+        );
     }
 
     public function productStores(): HasMany
@@ -46,13 +50,13 @@ class Product extends Model
     public function toSearchableArray(): array
     {
         return [
-            'id' => (int) $this->id,
-            'name' => $this->name,
-            'image' => $this->image,
-            'gtins' => (array) $this->gtins,
-            'stores' => (array) $this->stores,
-            'discounts' => (array) $this->discounts,
-            'store_names' => $this->stores->pluck('name')->join(', ')
+            "id" => (int) $this->id,
+            "name" => $this->name,
+            "image" => $this->image,
+            "gtins" => (array) $this->gtins,
+            "stores" => (array) $this->stores,
+            "discounts" => (array) $this->discounts,
+            "store_names" => $this->stores->pluck("name")->join(", "),
         ];
     }
 
@@ -61,7 +65,7 @@ class Product extends Model
      */
     protected function makeAllSearchableUsing(Builder $query): Builder
     {
-        return $query->with('stores', 'discounts');
+        return $query->with("stores", "discounts");
     }
 
     /**
@@ -69,6 +73,6 @@ class Product extends Model
      */
     public function makeSearchableUsing(Collection $models): Collection
     {
-        return $models->load('stores', 'discounts');
+        return $models->load("stores", "discounts");
     }
 }
