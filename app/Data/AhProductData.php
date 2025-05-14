@@ -73,6 +73,9 @@ class AhProductData extends Data implements ProductData
             "summary" => $this->descriptionHighlights,
             "description" => $this->descriptionHighlights,
             "image" => $this->images ? $this->images[0]["url"] : null,
+            "ingredients" => $this->ingredients(),
+            "nutrients" => $this->nutrients(),
+            "allergens" => $this->allergens()?->allergens,
         ]);
     }
 
@@ -86,8 +89,12 @@ class AhProductData extends Data implements ProductData
         ]);
     }
 
-    public function nutrients(): NutrientsData
+    public function nutrients(): NutrientsData|null
     {
+        if (empty($this->nutritionalInformation)) {
+            return null;
+        }
+
         return NutrientsData::from([
             "headings" => [
                 "",
@@ -121,14 +128,17 @@ class AhProductData extends Data implements ProductData
         ]);
     }
 
-    /** @return Array<string> */
-    public function ingredients(): array
+    public function ingredients(): string|null
     {
-        return [$this->foodAndBeverageIngredientStatement];
+        return $this->foodAndBeverageIngredientStatement;
     }
 
-    public function allergens(): AllergensData
+    public function allergens(): AllergensData|null
     {
+        if (empty($this->allergenInformation)) {
+            return null;
+        }
+
         return new AllergensData(
             array_map(
                 fn($allergen) => $allergen["levelOfContainmentCode"]["label"] .

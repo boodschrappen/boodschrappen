@@ -69,6 +69,9 @@ class DirkProductData extends Data implements ProductData
             "image" => $this->ProductPictures
                 ? $this->ProductPictures[0]["Url"]
                 : $this->ProductPicture["Url"] ?? null,
+            "ingredients" => $this->ingredients(),
+            "nutrients" => $this->nutrients(),
+            "allergens" => $this->allergens()?->allergens,
         ]);
     }
 
@@ -82,8 +85,15 @@ class DirkProductData extends Data implements ProductData
         ]);
     }
 
-    public function nutrients(): NutrientsData
+    public function nutrients(): NutrientsData|null
     {
+        if (
+            empty($this->ProductDeclarations) ||
+            empty($this->ProductDeclarations[0]["NutritionInformation"])
+        ) {
+            return null;
+        }
+
         $rowFn = fn($row) => [$row["Text"], $row["ValueAsSold"]];
 
         return NutrientsData::from([
@@ -105,13 +115,21 @@ class DirkProductData extends Data implements ProductData
         ]);
     }
 
-    public function ingredients(): array
+    public function ingredients(): string|null
     {
-        return [$this->ProductDeclarations[0]["ProductIngredients"][0]["Text"]];
+        if (empty($this->ProductDeclarations)) {
+            return null;
+        }
+
+        return $this->ProductDeclarations[0]["ProductIngredients"][0]["Text"];
     }
 
-    public function allergens(): AllergensData
+    public function allergens(): AllergensData|null
     {
+        if (empty($this->ProductDeclarations)) {
+            return null;
+        }
+
         return new AllergensData(
             array_map(
                 fn($allergen) => implode(" ", [
