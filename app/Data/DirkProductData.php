@@ -104,7 +104,8 @@ class DirkProductData extends Data implements ProductData
                 ]["Algemeen"]["Standaardeenheid"],
             ],
             "rows" => Arr::flatten(
-                array_map(
+                depth: 1,
+                array: array_map(
                     fn($row) => [
                         $rowFn($row["MainValue"]),
                         ...array_map($rowFn, $row["SubValues"]),
