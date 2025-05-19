@@ -22,10 +22,10 @@ class EditProduct extends EditRecord
                 ->label('Product heropvragen')
                 ->action(function (Product $record) {
                     try {
-                        $record->productStores->each(fn(ProductStore $productStore) => FetchProduct::dispatchSync($productStore));
+                        $record->productStores->each(fn(ProductStore $productStore) => FetchProduct::dispatch($productStore));
 
                         Notification::make()
-                            ->title('Product is opgehaald')
+                            ->title('Product wordt opgehaald')
                             ->success()
                             ->send();
 
