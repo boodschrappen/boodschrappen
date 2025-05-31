@@ -121,7 +121,8 @@ class ShoppingListResource extends Resource
                 Tables\Actions\DeleteAction::make()
                     ->modal(false)
                     ->hiddenLabel(),
-            ]);
+            ])
+            ->paginated(false);
     }
 
     public static function getRelations(): array
