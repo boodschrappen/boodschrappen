@@ -109,12 +109,16 @@ class ProductResource extends Resource
     {
         return $table
             ->searchable()
+            ->actionsAlignment("center")
             ->columns([
-                Tables\Columns\Layout\Split::make([
+                Tables\Columns\Layout\Stack::make([
                     Tables\Columns\ImageColumn::make("image")
+                        ->size(128)
                         ->grow(false)
-                        ->size(60)
-                        ->extraImgAttributes(["loading" => "lazy"]),
+                        ->extraImgAttributes([
+                            "loading" => "lazy",
+                            "class" => "m-2",
+                        ]),
                     Tables\Columns\Layout\Stack::make([
                         Tables\Columns\TextColumn::make("name")
                             ->weight(FontWeight::Bold)
@@ -122,16 +126,21 @@ class ProductResource extends Resource
                         Tables\Columns\TextColumn::make(
                             "productStores.original_price"
                         )->money("EUR"),
+                        Tables\Columns\TextColumn::make("stores.name")
+                            ->badge()
+                            ->wrap()
+                            ->alignRight()
+                            ->extraAttributes(["class" => "mt-2"]),
                     ]),
-                ])->from("md"),
-                Tables\Columns\TextColumn::make("stores.name")
-                    ->badge()
-                    ->wrap()
-                    ->alignRight(),
+                ])
+                    ->space(2)
+                    ->extraAttributes(["class" => "!flex-row sm:!flex-col"])
+                    ->alignCenter(),
             ])
             ->contentGrid([
-                "md" => 2,
-                "lg" => 3,
+                "sm" => 2,
+                "md" => 3,
+                "lg" => 4,
             ])
             ->filters([
                 SelectFilter::make("store_id")
