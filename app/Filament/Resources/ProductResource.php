@@ -160,7 +160,7 @@ class ProductResource extends Resource
                     ->badge(
                         fn($record) => ShoppingListItem::firstWhere(
                             "product_store_id",
-                            $record->productStores()->first()->id
+                            $record->productStores()->first()?->id
                         )?->amount
                     )
                     ->badgeColor("info")

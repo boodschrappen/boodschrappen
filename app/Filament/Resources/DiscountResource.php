@@ -19,92 +19,86 @@ class DiscountResource extends Resource
 {
     protected static ?string $model = Discount::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-currency-euro';
+    protected static ?string $navigationIcon = "heroicon-o-currency-euro";
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $modelLabel = 'korting';
+    protected static ?string $modelLabel = "aanbieding";
 
-    protected static ?string $pluralModelLabel = 'kortingen';
+    protected static ?string $pluralModelLabel = "aanbiedingen";
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->columns(3)
-            ->schema([
-                Forms\Components\Repeater::make('tiers')
-                    ->hiddenLabel()
-                    ->itemLabel('Korting')
-                    ->columnSpan(2)
-                    ->relationship('tiers')
-                    ->schema([
-                        Forms\Components\TextInput::make('description')
-                            ->maxLength(255),
-                        Forms\Components\Split::make([
-                            Forms\Components\TextInput::make('amount')
-                                ->numeric(),
-                            Forms\Components\Select::make('unit')
-                                ->options(['money' => 'money', 'percentage' => 'percentage']),
-                            Forms\Components\TextInput::make('size')
-                                ->numeric(),
-                        ])
+        return $form->columns(3)->schema([
+            Forms\Components\Repeater::make("tiers")
+                ->hiddenLabel()
+                ->itemLabel("Aanbieding")
+                ->columnSpan(2)
+                ->relationship("tiers")
+                ->schema([
+                    Forms\Components\TextInput::make("description")->maxLength(
+                        255
+                    ),
+                    Forms\Components\Split::make([
+                        Forms\Components\TextInput::make("amount")->numeric(),
+                        Forms\Components\Select::make("unit")->options([
+                            "money" => "money",
+                            "percentage" => "percentage",
+                        ]),
+                        Forms\Components\TextInput::make("size")->numeric(),
                     ]),
-                Forms\Components\Section::make()
-                    ->columnSpan(1)
-                    ->extraAttributes(['class' => 'sticky top-0'])
-                    ->schema([
-                        Forms\Components\DatePicker::make('start')
-                            ->required(),
-                        Forms\Components\DatePicker::make('end')
-                            ->required(),
-                        Forms\Components\Select::make('product_store_id')
-                            ->label('Product in winkel')
-                            ->options(
-                                fn() => ProductStore::query()
-                                    ->with('store', 'product')
-                                    ->get()
-                                    ->keyBy('id')
-                                    ->map(fn($item) => "{$item->product->name} in {$item->store->name}")
-                            )
-                            ->required(),
-                    ]),
-            ]);
+                ]),
+            Forms\Components\Section::make()
+                ->columnSpan(1)
+                ->extraAttributes(["class" => "sticky top-0"])
+                ->schema([
+                    Forms\Components\DatePicker::make("start")->required(),
+                    Forms\Components\DatePicker::make("end")->required(),
+                    Forms\Components\Select::make("product_store_id")
+                        ->label("Product in winkel")
+                        ->options(
+                            fn() => ProductStore::query()
+                                ->with("store", "product")
+                                ->get()
+                                ->keyBy("id")
+                                ->map(
+                                    fn(
+                                        $item
+                                    ) => "{$item->product->name} in {$item->store->name}"
+                                )
+                        )
+                        ->required(),
+                ]),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('start')
-                    ->date()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('end')
-                    ->date()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('product.name')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make("start")->date()->sortable(),
+                Tables\Columns\TextColumn::make("end")->date()->sortable(),
+                Tables\Columns\TextColumn::make("product.name")->sortable(),
             ])
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ]);
+            ->actions([Tables\Actions\EditAction::make()]);
     }
 
     public static function getRelations(): array
     {
         return [
-            //
-        ];
+                //
+            ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListDiscounts::route('/'),
-            'create' => Pages\CreateDiscount::route('/create'),
-            'edit' => Pages\EditDiscount::route('/{record}/edit'),
+            "index" => Pages\ListDiscounts::route("/"),
+            "create" => Pages\CreateDiscount::route("/create"),
+            "edit" => Pages\EditDiscount::route("/{record}/edit"),
         ];
     }
 }
