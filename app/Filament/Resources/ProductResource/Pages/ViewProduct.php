@@ -3,12 +3,11 @@
 namespace App\Filament\Resources\ProductResource\Pages;
 
 use App\Filament\Resources\ProductResource;
-use App\Filament\Resources\StoreResource;
+use App\Models\Product;
 use App\Models\ShoppingListItem;
 use Filament\Actions;
-use Filament\Forms;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
-use Filament\Support\Enums\MaxWidth;
 
 class ViewProduct extends ViewRecord
 {
@@ -25,29 +24,39 @@ class ViewProduct extends ViewRecord
     {
         return [
             Actions\Action::make("add_to_list")
-                ->modal()
-                ->modalHeading("Hoeveel wil je aan je lijstje toevoegen?")
-                ->modalWidth(MaxWidth::Small)
-                ->form([
-                    Forms\Components\TextInput::make("amount")
-                        ->hiddenLabel()
-                        ->numeric(),
-                    Forms\Components\Select::make("product_store_id")
-                        ->label(StoreResource::getModelLabel())
-                        ->options(
-                            $this->record->stores->mapWithKeys(
-                                fn($store) => [
-                                    $store->pivot->id => $store->name,
-                                ]
-                            )
-                        ),
-                ])
-                ->action(function ($record) {
-                    ShoppingListItem::create([
-                        "product_store_id" => $record->productStores()->first()
-                            ->id,
-                        "description" => $record->name,
-                    ]);
+                ->label("Voeg toe aan je lijstje")
+                ->badge(
+                    fn($record) => ShoppingListItem::firstWhere(
+                        "product_store_id",
+                        $record->productStores()->first()->id
+                    )?->amount
+                )
+                ->badgeColor("info")
+                ->icon("heroicon-o-shopping-cart")
+                ->action(function (Product $record) {
+                    // TODO: Put in reuable method.
+                    $existingListItem = ShoppingListItem::firstWhere(
+                        "product_store_id",
+                        $record->productStores()->first()->id
+                    );
+
+                    if ($existingListItem) {
+                        $existingListItem->amount += 1;
+                        $existingListItem->save();
+                    } else {
+                        ShoppingListItem::create([
+                            "amount" => 1,
+                            // TODO: Select the cheapest option. Maybe using a scope?
+                            "product_store_id" => $record
+                                ->productStores()
+                                ->first()->id,
+                            "description" => $record->name,
+                        ]);
+                    }
+
+                    Notification::make("list_item_added")
+                        ->title("$record->name is toegevoegd aan je lijstje")
+                        ->send();
                 }),
         ];
     }
