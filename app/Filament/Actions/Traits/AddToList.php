@@ -40,6 +40,8 @@ trait AddToList
             fn($record) => "$record->name is toegevoegd aan je lijstje"
         );
 
+        $this->authorize("create", ShoppingListItem::class);
+
         $this->action(function (): void {
             $this->process(function (Model $record) {
                 // TODO: Select the cheapest option. Maybe using a scope?
