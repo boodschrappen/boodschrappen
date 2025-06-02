@@ -34,8 +34,9 @@ class ShoppingListResource extends Resource
         return $form->columns(1)->schema([
             Forms\Components\TextInput::make("amount")
                 ->label("Aantal")
-                ->numeric()
+                ->integer()
                 ->default(1)
+                ->minValue(1)
                 ->autofocus(),
             Forms\Components\Select::make("product_store_id")
                 ->label("Product")
