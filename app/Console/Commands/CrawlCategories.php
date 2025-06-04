@@ -90,7 +90,7 @@ class CrawlCategories extends Command
                 // We don't want to fill up the queue with individual product indexes.
                 Product::withoutSyncingToSearch(fn() => $savedProduct->save());
 
-                return [$savedProduct->id => $product->toStoreProduct()->toArray()];
+                return [$savedProduct->id => $product->toStoreProduct()->getAttributes()];
             });
 
         $store->products()->attach($newProducts);
