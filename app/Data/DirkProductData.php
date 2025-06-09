@@ -8,6 +8,7 @@ use App\Data\Nutrients\NutrientsData;
 use App\Models\Product;
 use App\Models\ProductStore;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
 
@@ -140,5 +141,10 @@ class DirkProductData extends Data implements ProductData
                 $this->ProductDeclarations[0]["ProductAllergens"]
             )
         );
+    }
+
+    public function promotions(): Collection
+    {
+        return collect();
     }
 }

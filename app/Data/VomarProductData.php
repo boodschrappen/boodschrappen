@@ -8,6 +8,7 @@ use App\Data\Nutrients\NutrientsData;
 use App\Models\Product;
 use App\Models\ProductStore;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
 
@@ -101,5 +102,10 @@ class VomarProductData extends Data implements ProductData
         return $this->allergiesWarning
             ? new AllergensData([$this->allergiesWarning])
             : null;
+    }
+
+    public function promotions(): Collection
+    {
+        return collect();
     }
 }

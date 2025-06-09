@@ -6,6 +6,7 @@ use App\Data\Nutrients\AllergensData;
 use App\Data\Nutrients\NutrientsData;
 use App\Models\Product;
 use App\Models\ProductStore;
+use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 
 interface ProductData
@@ -21,4 +22,6 @@ interface ProductData
     public function ingredients(): string|null;
 
     public function allergens(): AllergensData|null;
+
+    public function promotions(): Collection|null;
 }

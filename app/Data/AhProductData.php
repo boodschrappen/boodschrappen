@@ -8,6 +8,7 @@ use App\Data\Nutrients\NutrientsData;
 use App\Models\Product;
 use App\Models\ProductStore;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
 
@@ -147,5 +148,10 @@ class AhProductData extends Data implements ProductData
                 $this->allergenInformation[0]["items"]
             )
         );
+    }
+
+    public function promotions(): Collection
+    {
+        return collect();
     }
 }
