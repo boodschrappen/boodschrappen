@@ -38,5 +38,7 @@ class FetchProduct implements ShouldQueue
         // Persist transformations
         $this->storeProduct->product->fill($mergedProductData->toProduct()->toArray())->save();
         $this->storeProduct->fill($mergedProductData->toStoreProduct()->toArray())->save();
+
+        // Check if the product has any discounts
     }
 }

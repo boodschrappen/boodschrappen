@@ -7,6 +7,7 @@ use App\Data\Nutrients\AllergensData;
 use App\Data\Nutrients\NutrientsData;
 use App\Models\Product;
 use App\Models\ProductStore;
+use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
 
@@ -120,5 +121,10 @@ class JumboProductData extends Data implements ProductData
         }
 
         return new AllergensData([$this->allergyText]);
+    }
+
+    public function promotions(): Collection
+    {
+        return collect();
     }
 }
