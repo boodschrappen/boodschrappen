@@ -106,6 +106,7 @@ class VomarProductData extends Data implements ProductData
 
     public function promotion(): PromotionData|null
     {
-        return new PromotionData(start: now(), end: now(), tiers: []);
+        // Vomar has no data apart from the key `discountDeal` which is also not up-to-date.
+        return null;
     }
 }
