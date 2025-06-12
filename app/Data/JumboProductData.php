@@ -5,9 +5,9 @@ namespace App\Data;
 use App\Contracts\ProductData;
 use App\Data\Nutrients\AllergensData;
 use App\Data\Nutrients\NutrientsData;
-use App\Data\Promotions\PromotionData;
-use App\Data\Promotions\PromotionTierData;
-use App\Data\Promotions\PromotionUnit;
+use App\Data\Discounts\DiscountData;
+use App\Data\Discounts\DiscountTierData;
+use App\Data\Discounts\DiscountUnit;
 use App\Models\Product;
 use App\Models\ProductStore;
 use Carbon\Carbon;
@@ -126,13 +126,13 @@ class JumboProductData extends Data implements ProductData
         return new AllergensData([$this->allergyText]);
     }
 
-    public function promotion(): PromotionData|null
+    public function discount(): DiscountData|null
     {
         if (!$this->promotion) {
             return null;
         }
 
-        return new PromotionData(
+        return new DiscountData(
             start: Carbon::parse($this->promotion["fromDate"] / 1000),
             end: Carbon::parse($this->promotion["toDate"] / 1000),
             tiers: $this->approximateTiers()
@@ -145,7 +145,7 @@ class JumboProductData extends Data implements ProductData
             "2e halve prijs" => fn() => [
                 "amount" => 25,
                 "size" => 2,
-                "unit" => PromotionUnit::Percentage,
+                "unit" => DiscountUnit::Percentage,
             ],
             "(\\d+)\\svoor\\s€\\s?([\\d.]+)" => function (array $match) {
                 if (!empty($match) && ($size = $match[1])) {
@@ -161,12 +161,12 @@ class JumboProductData extends Data implements ProductData
             "(\\d+)%" => fn(array $match) => [
                 "amount" => $match[1],
                 "size" => 1,
-                "unit" => PromotionUnit::Percentage,
+                "unit" => DiscountUnit::Percentage,
             ],
             "€\\s?(\\d+)" => fn(array $match) => [
                 "amount" => $match[1],
                 "size" => 1,
-                "unit" => PromotionUnit::Money,
+                "unit" => DiscountUnit::Money,
             ],
             "(\\d+)\\s?\\+\\s?(\\d+)\\sgratis" => function (array $match) {
                 $minimum = $match[1];
@@ -179,7 +179,7 @@ class JumboProductData extends Data implements ProductData
                 return [
                     "amount" => ($additional / $size) * 100,
                     "size" => $size,
-                    "unit" => PromotionUnit::Percentage,
+                    "unit" => DiscountUnit::Percentage,
                 ];
             },
         ]);
@@ -195,7 +195,7 @@ class JumboProductData extends Data implements ProductData
                 }
             })
             ->filter(fn($t) => $t !== null)
-            ->map(fn($t) => PromotionTierData::from($t))
+            ->map(fn($t) => DiscountTierData::from($t))
             ->all();
     }
 }

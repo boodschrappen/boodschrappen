@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Data\Promotions;
+namespace App\Data\Discounts;
 
 use Spatie\LaravelData\Data;
 
-class PromotionTierData extends Data
+class DiscountTierData extends Data
 {
     public function __construct(
         public string $description,
         public float|int $amount,
-        public PromotionUnit $unit,
+        public DiscountUnit $unit,
         public int $size
     ) {}
 }

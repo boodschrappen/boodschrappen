@@ -5,7 +5,7 @@ namespace App\Data;
 use App\Contracts\ProductData;
 use App\Data\Nutrients\AllergensData;
 use App\Data\Nutrients\NutrientsData;
-use App\Data\Promotions\PromotionData;
+use App\Data\Discounts\DiscountData;
 use App\Models\Product;
 use App\Models\ProductStore;
 use Illuminate\Support\Arr;
@@ -104,7 +104,7 @@ class VomarProductData extends Data implements ProductData
             : null;
     }
 
-    public function promotion(): PromotionData|null
+    public function discount(): DiscountData|null
     {
         // Vomar has no data apart from the key `discountDeal` which is also not up-to-date.
         return null;

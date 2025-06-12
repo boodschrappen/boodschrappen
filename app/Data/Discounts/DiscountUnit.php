@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Data\Promotions;
+namespace App\Data\Discounts;
 
-enum PromotionUnit: string
+enum DiscountUnit: string
 {
     case Percentage = "percentage";
     case Money = "money";

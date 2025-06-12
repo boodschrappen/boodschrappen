@@ -5,9 +5,9 @@ namespace App\Data;
 use App\Contracts\ProductData;
 use App\Data\Nutrients\AllergensData;
 use App\Data\Nutrients\NutrientsData;
-use App\Data\Promotions\PromotionData;
-use App\Data\Promotions\PromotionTierData;
-use App\Data\Promotions\PromotionUnit;
+use App\Data\Discounts\DiscountData;
+use App\Data\Discounts\DiscountTierData;
+use App\Data\Discounts\DiscountUnit;
 use App\Models\Product;
 use App\Models\ProductStore;
 use Carbon\Carbon;
@@ -147,13 +147,13 @@ class DirkProductData extends Data implements ProductData
         );
     }
 
-    public function promotion(): PromotionData|null
+    public function discount(): DiscountData|null
     {
         if (empty($this->ProductOffers)) {
             return null;
         }
 
-        return new PromotionData(
+        return new DiscountData(
             start: Carbon::parse($this->ProductOffers[0]["Offer"]["startDate"]),
             end: Carbon::parse($this->ProductOffers[0]["Offer"]["endDate"]),
             tiers: $this->approximateTiers()
@@ -166,13 +166,13 @@ class DirkProductData extends Data implements ProductData
         $offer = $this->ProductOffers[0]["OfferPrice"];
 
         return [
-            new PromotionTierData(
+            new DiscountTierData(
                 description: "van " .
                     Number::currency($original, "EUR") .
                     " voor " .
                     Number::currency($offer, "EUR"),
                 amount: $offer,
-                unit: PromotionUnit::Money,
+                unit: DiscountUnit::Money,
                 size: 1
             ),
         ];

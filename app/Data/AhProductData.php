@@ -5,9 +5,9 @@ namespace App\Data;
 use App\Contracts\ProductData;
 use App\Data\Nutrients\AllergensData;
 use App\Data\Nutrients\NutrientsData;
-use App\Data\Promotions\PromotionData;
-use App\Data\Promotions\PromotionTierData;
-use App\Data\Promotions\PromotionUnit;
+use App\Data\Discounts\DiscountData;
+use App\Data\Discounts\DiscountTierData;
+use App\Data\Discounts\DiscountUnit;
 use App\Models\Product;
 use App\Models\ProductStore;
 use Carbon\Carbon;
@@ -82,11 +82,20 @@ class AhProductData extends Data implements ProductData
             "ingredients" => $this->ingredients(),
             "nutrients" => $this->nutrients(),
             "allergens" => $this->allergens()?->allergens,
-            "promotion" => $this->promotion(),
         ]);
     }
 
     public function toStoreProduct(): ProductStore
+    {
+        return new ProductStore([
+            "raw_identifier" => $this->webshopId,
+            "reduced_price" => $this->currentPrice,
+            "original_price" => $this->priceBeforeBonus ?? $this->currentPrice,
+            "raw" => $this->toArray(),
+        ]);
+    }
+
+    public function toDiscount(): ProductStore
     {
         return new ProductStore([
             "raw_identifier" => $this->webshopId,
@@ -156,13 +165,13 @@ class AhProductData extends Data implements ProductData
         );
     }
 
-    public function promotion(): PromotionData|null
+    public function discount(): DiscountData|null
     {
         if (!$this->isBonus) {
             return null;
         }
 
-        return new PromotionData(
+        return new DiscountData(
             start: Carbon::parse($this->bonusStartDate),
             end: Carbon::parse($this->bonusEndDate),
             tiers: $this->approximateTiers()
@@ -182,14 +191,14 @@ class AhProductData extends Data implements ProductData
                         return [
                             ...$defaults,
                             "amount" => $offer["price"] ?? $offer["amount"],
-                            "unit" => PromotionUnit::Money,
+                            "unit" => DiscountUnit::Money,
                             "size" => $offer["count"] ?? 1,
                         ];
                     case "DISCOUNT_X_FOR_Y":
                         return [
                             ...$defaults,
                             "amount" => $offer["price"],
-                            "unit" => PromotionUnit::Money,
+                            "unit" => DiscountUnit::Money,
                             "size" => $offer["count"],
                         ];
                     case "DISCOUNT_PERCENTAGE":
@@ -197,14 +206,14 @@ class AhProductData extends Data implements ProductData
                         return [
                             ...$defaults,
                             "amount" => $offer["percentage"],
-                            "unit" => PromotionUnit::Percentage,
+                            "unit" => DiscountUnit::Percentage,
                             "size" => $offer["count"] ?? 1,
                         ];
                     case "DISCOUNT_ONE_HALF_PRICE":
                         return [
                             ...$defaults,
                             "amount" => 25,
-                            "unit" => PromotionUnit::Percentage,
+                            "unit" => DiscountUnit::Percentage,
                             "size" => 2,
                         ];
                     case "DISCOUNT_X_PLUS_Y_FREE":
@@ -212,21 +221,21 @@ class AhProductData extends Data implements ProductData
                         return [
                             ...$defaults,
                             "amount" => ($offer["freeCount"] / $size) * 100,
-                            "unit" => PromotionUnit::Percentage,
+                            "unit" => DiscountUnit::Percentage,
                             "size" => $size,
                         ];
                     case "DISCOUNT_BUNDLE_BULK":
                         return [
                             ...$defaults,
                             "amount" => $offer["percentage"],
-                            "unit" => PromotionUnit::Percentage,
+                            "unit" => DiscountUnit::Percentage,
                             "size" => 1,
                         ];
                     case "DISCOUNT_WEIGHT":
                         return [
                             ...$defaults,
                             "amount" => $offer["price"],
-                            "unit" => PromotionUnit::Money,
+                            "unit" => DiscountUnit::Money,
                             "size" => 100,
                             // TODO: Add a size unit to support weighted discounts.
                         ];
@@ -235,7 +244,7 @@ class AhProductData extends Data implements ProductData
                 }
             })
             ->filter(fn($t) => $t !== null)
-            ->map(fn($t) => PromotionTierData::from($t))
+            ->map(fn($t) => DiscountTierData::from($t))
             ->all();
     }
 }

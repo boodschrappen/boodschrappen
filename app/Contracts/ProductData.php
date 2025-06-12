@@ -4,7 +4,7 @@ namespace App\Contracts;
 
 use App\Data\Nutrients\AllergensData;
 use App\Data\Nutrients\NutrientsData;
-use App\Data\Promotions\PromotionData;
+use App\Data\Discounts\DiscountData;
 use App\Models\Discount;
 use App\Models\Product;
 use App\Models\ProductStore;
@@ -28,5 +28,5 @@ interface ProductData
     /**
      * @return Collection<Discount>
      */
-    public function promotion(): PromotionData|null;
+    public function discount(): DiscountData|null;
 }
