@@ -5,9 +5,9 @@ namespace App\Data;
 use App\Contracts\ProductData;
 use App\Data\Nutrients\AllergensData;
 use App\Data\Nutrients\NutrientsData;
+use App\Data\Promotions\PromotionData;
 use App\Models\Product;
 use App\Models\ProductStore;
-use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
 
@@ -123,8 +123,8 @@ class JumboProductData extends Data implements ProductData
         return new AllergensData([$this->allergyText]);
     }
 
-    public function promotions(): Collection
+    public function promotion(): PromotionData|null
     {
-        return collect();
+        return new PromotionData(start: now(), end: now(), tiers: []);
     }
 }

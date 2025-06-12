@@ -5,10 +5,13 @@ namespace App\Data;
 use App\Contracts\ProductData;
 use App\Data\Nutrients\AllergensData;
 use App\Data\Nutrients\NutrientsData;
+use App\Data\Promotions\PromotionData;
+use App\Data\Promotions\PromotionTierData;
+use App\Data\Promotions\PromotionUnit;
 use App\Models\Product;
 use App\Models\ProductStore;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
 
@@ -18,39 +21,41 @@ class AhProductData extends Data implements ProductData
         public int $webshopId,
         public string $title,
         public string $descriptionHighlights,
-        public Optional|null|int $hqId = null,
-        public Optional|null|string $salesUnitSize = null,
-        public Optional|null|string $unitPriceDescription = null,
-        public Optional|null|array $images = null,
-        public Optional|null|float $currentPrice = null,
-        public Optional|null|float $priceBeforeBonus = null,
-        public Optional|null|string $orderAvailabilityStatus = null,
-        public Optional|null|string $mainCategory = null,
-        public Optional|null|string $subCategory = null,
-        public Optional|null|string $brand = null,
-        public Optional|null|string $shopType = null,
-        public Optional|null|bool $availableOnline = null,
-        public Optional|null|bool $isPreviouslyBought = null,
-        public Optional|null|array $propertyIcons = null,
-        public Optional|null|string $nutriscore = null,
-        public Optional|null|bool $nix18 = null,
-        public Optional|null|bool $isStapelBonus = null,
-        public Optional|null|array $extraDescriptions = null,
-        public Optional|null|bool $isBonus = null,
-        public Optional|null|string $descriptionFull = null,
-        public Optional|null|bool $isOrderable = null,
-        public Optional|null|bool $isInfiniteBonus = null,
-        public Optional|null|bool $isSample = null,
-        public Optional|null|bool $isSponsored = null,
-        public Optional|null|bool $isVirtualBundle = null,
-        public Optional|null|array $discountLabels = null,
+        public Optional|null|int $hqId,
+        public Optional|null|string $salesUnitSize,
+        public Optional|null|string $unitPriceDescription,
+        public Optional|null|array $images,
+        public Optional|null|float $currentPrice,
+        public Optional|null|float $priceBeforeBonus,
+        public Optional|null|string $orderAvailabilityStatus,
+        public Optional|null|string $mainCategory,
+        public Optional|null|string $subCategory,
+        public Optional|null|string $brand,
+        public Optional|null|string $shopType,
+        public Optional|null|bool $availableOnline,
+        public Optional|null|bool $isPreviouslyBought,
+        public Optional|null|array $propertyIcons,
+        public Optional|null|string $nutriscore,
+        public Optional|null|bool $nix18,
+        public Optional|null|bool $isStapelBonus,
+        public Optional|null|array $extraDescriptions,
+        public Optional|null|bool $isBonus,
+        public Optional|null|string $descriptionFull,
+        public Optional|null|bool $isOrderable,
+        public Optional|null|bool $isInfiniteBonus,
+        public Optional|null|bool $isSample,
+        public Optional|null|bool $isSponsored,
+        public Optional|null|bool $isVirtualBundle,
+        public Optional|null|array $discountLabels,
+        public Optional|null|string $bonusStartDate,
+        public Optional|null|string $bonusEndDate,
 
         // Only available on details page.
-        public Optional|null|int $gln = null,
-        public Optional|null|int $gtin = null,
-        public Optional|null|array $nutritionalInformation = null,
-        public Optional|null|string $foodAndBeverageIngredientStatement = null,
-        public Optional|null|array $allergenInformation = null
+        public Optional|null|int $gln,
+        public Optional|null|int $gtin,
+        public Optional|null|array $nutritionalInformation,
+        public Optional|null|string $foodAndBeverageIngredientStatement,
+        public Optional|null|array $allergenInformation
     ) {}
 
     public static function fromModel(ProductStore $storeProduct): self
@@ -77,6 +82,7 @@ class AhProductData extends Data implements ProductData
             "ingredients" => $this->ingredients(),
             "nutrients" => $this->nutrients(),
             "allergens" => $this->allergens()?->allergens,
+            "promotion" => $this->promotion(),
         ]);
     }
 
@@ -150,8 +156,86 @@ class AhProductData extends Data implements ProductData
         );
     }
 
-    public function promotions(): Collection
+    public function promotion(): PromotionData|null
     {
-        return collect();
+        if (!$this->isBonus) {
+            return null;
+        }
+
+        return new PromotionData(
+            start: Carbon::parse($this->bonusStartDate),
+            end: Carbon::parse($this->bonusEndDate),
+            tiers: $this->approximateTiers()
+        );
+    }
+
+    private function approximateTiers(): array
+    {
+        return collect($this->discountLabels ?? [])
+            ->map(function ($offer) {
+                $defaults = ["description" => $offer["defaultDescription"]];
+
+                switch ($offer["code"]) {
+                    case "DISCOUNT_FIXED_PRICE":
+                    case "DISCOUNT_AMOUNT":
+                    case "DISCOUNT_TIERED_PRICE":
+                        return [
+                            ...$defaults,
+                            "amount" => $offer["price"] ?? $offer["amount"],
+                            "unit" => PromotionUnit::Money,
+                            "size" => $offer["count"] ?? 1,
+                        ];
+                    case "DISCOUNT_X_FOR_Y":
+                        return [
+                            ...$defaults,
+                            "amount" => $offer["price"],
+                            "unit" => PromotionUnit::Money,
+                            "size" => $offer["count"],
+                        ];
+                    case "DISCOUNT_PERCENTAGE":
+                    case "DISCOUNT_TIERED_PERCENT":
+                        return [
+                            ...$defaults,
+                            "amount" => $offer["percentage"],
+                            "unit" => PromotionUnit::Percentage,
+                            "size" => $offer["count"] ?? 1,
+                        ];
+                    case "DISCOUNT_ONE_HALF_PRICE":
+                        return [
+                            ...$defaults,
+                            "amount" => 25,
+                            "unit" => PromotionUnit::Percentage,
+                            "size" => 2,
+                        ];
+                    case "DISCOUNT_X_PLUS_Y_FREE":
+                        $size = $offer["count"] + $offer["freeCount"];
+                        return [
+                            ...$defaults,
+                            "amount" => ($offer["freeCount"] / $size) * 100,
+                            "unit" => PromotionUnit::Percentage,
+                            "size" => $size,
+                        ];
+                    case "DISCOUNT_BUNDLE_BULK":
+                        return [
+                            ...$defaults,
+                            "amount" => $offer["percentage"],
+                            "unit" => PromotionUnit::Percentage,
+                            "size" => 1,
+                        ];
+                    case "DISCOUNT_WEIGHT":
+                        return [
+                            ...$defaults,
+                            "amount" => $offer["price"],
+                            "unit" => PromotionUnit::Money,
+                            "size" => 100,
+                            // TODO: Add a size unit to support weighted discounts.
+                        ];
+                    default:
+                        return null;
+                }
+            })
+            ->filter(fn($t) => $t !== null)
+            ->map(fn($t) => PromotionTierData::from($t))
+            ->all();
     }
 }
