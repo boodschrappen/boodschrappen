@@ -5,9 +5,14 @@ namespace App\Data;
 use App\Contracts\ProductData;
 use App\Data\Nutrients\AllergensData;
 use App\Data\Nutrients\NutrientsData;
+use App\Data\Discounts\DiscountData;
+use App\Data\Discounts\DiscountTierData;
+use App\Data\Discounts\DiscountUnit;
 use App\Models\Product;
 use App\Models\ProductStore;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Number;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
 
@@ -140,5 +145,36 @@ class DirkProductData extends Data implements ProductData
                 $this->ProductDeclarations[0]["ProductAllergens"]
             )
         );
+    }
+
+    public function discount(): DiscountData|null
+    {
+        if (empty($this->ProductOffers)) {
+            return null;
+        }
+
+        return new DiscountData(
+            start: Carbon::parse($this->ProductOffers[0]["Offer"]["startDate"]),
+            end: Carbon::parse($this->ProductOffers[0]["Offer"]["endDate"]),
+            tiers: $this->approximateTiers()
+        );
+    }
+
+    private function approximateTiers(): array
+    {
+        $original = $this->ProductOffers[0]["RegularPrice"];
+        $offer = $this->ProductOffers[0]["OfferPrice"];
+
+        return [
+            new DiscountTierData(
+                description: "van " .
+                    Number::currency($original, "EUR") .
+                    " voor " .
+                    Number::currency($offer, "EUR"),
+                amount: $offer,
+                unit: DiscountUnit::Money,
+                size: 1
+            ),
+        ];
     }
 }
