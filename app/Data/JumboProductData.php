@@ -5,8 +5,13 @@ namespace App\Data;
 use App\Contracts\ProductData;
 use App\Data\Nutrients\AllergensData;
 use App\Data\Nutrients\NutrientsData;
+use App\Data\Discounts\DiscountData;
+use App\Data\Discounts\DiscountTierData;
+use App\Data\Discounts\DiscountUnit;
 use App\Models\Product;
 use App\Models\ProductStore;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
 
@@ -120,5 +125,77 @@ class JumboProductData extends Data implements ProductData
         }
 
         return new AllergensData([$this->allergyText]);
+    }
+
+    public function discount(): DiscountData|null
+    {
+        if (!$this->promotion) {
+            return null;
+        }
+
+        return new DiscountData(
+            start: Carbon::parse($this->promotion["fromDate"] / 1000),
+            end: Carbon::parse($this->promotion["toDate"] / 1000),
+            tiers: $this->approximateTiers()
+        );
+    }
+
+    private function approximateTiers(): Collection
+    {
+        $promotionTypes = collect([
+            "2e halve prijs" => fn() => [
+                "amount" => 25,
+                "size" => 2,
+                "unit" => DiscountUnit::Percentage,
+            ],
+            "(\\d+)\\svoor\\s€\\s?([\\d.]+)" => function (array $match) {
+                if (!empty($match) && ($size = $match[1])) {
+                    return [
+                        "amount" => $match[2],
+                        "size" => $size,
+                        "unit" => "money",
+                    ];
+                }
+
+                return null;
+            },
+            "(\\d+)%" => fn(array $match) => [
+                "amount" => $match[1],
+                "size" => 1,
+                "unit" => DiscountUnit::Percentage,
+            ],
+            "€\\s?(\\d+)" => fn(array $match) => [
+                "amount" => $match[1],
+                "size" => 1,
+                "unit" => DiscountUnit::Money,
+            ],
+            "(\\d+)\\s?\\+\\s?(\\d+)\\sgratis" => function (array $match) {
+                $minimum = $match[1];
+                $additional = $match[2];
+                if (!$minimum || !$additional) {
+                    return null;
+                }
+
+                $size = $minimum + $additional;
+                return [
+                    "amount" => ($additional / $size) * 100,
+                    "size" => $size,
+                    "unit" => DiscountUnit::Percentage,
+                ];
+            },
+        ]);
+
+        return collect($this->promotion["tags"])
+            ->map(function ($tag) use ($promotionTypes) {
+                foreach ($promotionTypes as $regex => $fn) {
+                    $match = preg_match($regex, $tag, PREG_UNMATCHED_AS_NULL);
+                    if (!$match) {
+                        continue;
+                    }
+                    return $fn($match);
+                }
+            })
+            ->filter(fn($t) => $t !== null)
+            ->map(fn($t) => DiscountTierData::from($t));
     }
 }

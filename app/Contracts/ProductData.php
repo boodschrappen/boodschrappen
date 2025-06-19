@@ -4,8 +4,11 @@ namespace App\Contracts;
 
 use App\Data\Nutrients\AllergensData;
 use App\Data\Nutrients\NutrientsData;
+use App\Data\Discounts\DiscountData;
+use App\Models\Discount;
 use App\Models\Product;
 use App\Models\ProductStore;
+use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 
 interface ProductData
@@ -21,4 +24,6 @@ interface ProductData
     public function ingredients(): string|null;
 
     public function allergens(): AllergensData|null;
+
+    public function discount(): DiscountData|null;
 }
