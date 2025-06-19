@@ -25,8 +25,5 @@ interface ProductData
 
     public function allergens(): AllergensData|null;
 
-    /**
-     * @return Collection<Discount>
-     */
     public function discount(): DiscountData|null;
 }
