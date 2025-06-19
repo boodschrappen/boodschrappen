@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\ProductStore;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Number;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
@@ -160,12 +161,12 @@ class DekamarktProductData extends Data implements ProductData
         );
     }
 
-    private function approximateTiers(): array
+    private function approximateTiers(): Collection
     {
         $original = $this->ProductOffers[0]["RegularPrice"];
         $offer = $this->ProductOffers[0]["OfferPrice"];
 
-        return [
+        return collect([
             new DiscountTierData(
                 description: "van " .
                     Number::currency($original, "EUR") .
@@ -175,6 +176,6 @@ class DekamarktProductData extends Data implements ProductData
                 unit: DiscountUnit::Money,
                 size: 1
             ),
-        ];
+        ]);
     }
 }

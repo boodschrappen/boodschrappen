@@ -3,7 +3,7 @@
 namespace App\Data\Discounts;
 
 use Carbon\Carbon;
-use Spatie\LaravelData\Attributes\DataCollectionOf;
+use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 
 class DiscountData extends Data
@@ -11,6 +11,8 @@ class DiscountData extends Data
     public function __construct(
         public Carbon $start,
         public Carbon $end,
-        #[DataCollectionOf(DiscountTierData::class)] public array $tiers
+
+        /** @var Collection<DiscountTierData> */
+        public Collection $tiers
     ) {}
 }

@@ -11,6 +11,7 @@ use App\Data\Discounts\DiscountUnit;
 use App\Models\Product;
 use App\Models\ProductStore;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
 
@@ -139,7 +140,7 @@ class JumboProductData extends Data implements ProductData
         );
     }
 
-    private function approximateTiers(): array
+    private function approximateTiers(): Collection
     {
         $promotionTypes = collect([
             "2e halve prijs" => fn() => [
@@ -195,7 +196,6 @@ class JumboProductData extends Data implements ProductData
                 }
             })
             ->filter(fn($t) => $t !== null)
-            ->map(fn($t) => DiscountTierData::from($t))
-            ->all();
+            ->map(fn($t) => DiscountTierData::from($t));
     }
 }

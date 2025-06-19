@@ -8,10 +8,12 @@ use App\Data\Nutrients\NutrientsData;
 use App\Data\Discounts\DiscountData;
 use App\Data\Discounts\DiscountTierData;
 use App\Data\Discounts\DiscountUnit;
+use App\Models\Discount;
 use App\Models\Product;
 use App\Models\ProductStore;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
 
@@ -95,16 +97,6 @@ class AhProductData extends Data implements ProductData
         ]);
     }
 
-    public function toDiscount(): ProductStore
-    {
-        return new ProductStore([
-            "raw_identifier" => $this->webshopId,
-            "reduced_price" => $this->currentPrice,
-            "original_price" => $this->priceBeforeBonus ?? $this->currentPrice,
-            "raw" => $this->toArray(),
-        ]);
-    }
-
     public function nutrients(): NutrientsData|null
     {
         if (empty($this->nutritionalInformation)) {
@@ -178,7 +170,7 @@ class AhProductData extends Data implements ProductData
         );
     }
 
-    private function approximateTiers(): array
+    private function approximateTiers(): Collection
     {
         return collect($this->discountLabels ?? [])
             ->map(function ($offer) {
@@ -244,7 +236,6 @@ class AhProductData extends Data implements ProductData
                 }
             })
             ->filter(fn($t) => $t !== null)
-            ->map(fn($t) => DiscountTierData::from($t))
-            ->all();
+            ->map(fn($t) => DiscountTierData::from($t));
     }
 }
