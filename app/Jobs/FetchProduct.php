@@ -7,6 +7,7 @@ use App\Models\ProductStore;
 use App\Services\Crawlers\Crawler;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class FetchProduct implements ShouldQueue
@@ -67,23 +68,22 @@ class FetchProduct implements ShouldQueue
             $discountExists = $this->storeProduct
                 ->discounts()
                 ->where([
-                    ["product_store_id", $this->storeProduct->id],
                     ["start", $discountData->start],
                     ["end", $discountData->end],
-                ]);
+                ])
+                ->exists();
 
             if (!$discountExists) {
                 $discount = $this->storeProduct->discounts()->create([
                     "product_store_id" => $this->storeProduct->id,
-                    ...$productData->discount()->attributes("start", "end"),
+                    "start" => $discountData->start,
+                    "end" => $discountData->end,
                 ]);
 
                 $discount
                     ->tiers()
                     ->createMany(
-                        $productData
-                            ->discount()
-                            ->tiers->map(fn($tier) => $tier->all())
+                        $discountData->tiers->map(fn($tier) => $tier->all())
                     );
             }
         } else {
