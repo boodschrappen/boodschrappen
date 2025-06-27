@@ -12,7 +12,7 @@ RUN npm ci && npm run build
 
 FROM composer:${COMPOSER_VERSION} AS vendor
 
-FROM dunglas/frankenphp:1.5-php${PHP_VERSION}
+FROM dunglas/frankenphp:1.7-php${PHP_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
 
