@@ -155,8 +155,8 @@ class DirkProductData extends Data implements ProductData
         }
 
         return new DiscountData(
-            start: Carbon::parse($this->ProductOffers[0]["Offer"]["startDate"]),
-            end: Carbon::parse($this->ProductOffers[0]["Offer"]["endDate"]),
+            start: Carbon::parse($this->ProductOffers[0]["Offer"]["StartDate"]),
+            end: Carbon::parse($this->ProductOffers[0]["Offer"]["EndDate"]),
             tiers: $this->approximateTiers()
         );
     }
