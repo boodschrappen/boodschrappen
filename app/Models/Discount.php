@@ -12,18 +12,18 @@ class Discount extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $guarded = ["id"];
 
-    protected $with = ['tiers'];
+    protected $with = ["tiers"];
 
     protected function casts(): array
     {
-        return ['start', 'end'];
+        return ["start", "end"];
     }
 
     public function tiers(): HasMany
     {
-        return $this->hasMany(DiscountTier::class, 'discount_id');
+        return $this->hasMany(DiscountTier::class, "discount_id");
     }
 
     public function product(): HasOneThrough
@@ -31,16 +31,23 @@ class Discount extends Model
         return $this->hasOneThrough(
             Product::class,
             ProductStore::class,
-            'id',
-            'id',
-            'product_store_id',
-            'product_id'
+            "id",
+            "id",
+            "product_store_id",
+            "product_id"
         );
     }
 
     public function store(): HasOneThrough
     {
-        return $this->hasOneThrough(Store::class, ProductStore::class);
+        return $this->hasOneThrough(
+            Store::class,
+            ProductStore::class,
+            "id",
+            "id",
+            "product_store_id",
+            "store_id"
+        );
     }
 
     public function productStore(): BelongsTo
