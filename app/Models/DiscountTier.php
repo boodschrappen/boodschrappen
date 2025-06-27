@@ -10,7 +10,7 @@ class DiscountTier extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $guarded = ["id"];
 
     public function discount(): BelongsTo
     {
