@@ -8,17 +8,18 @@ use App\Filament\Resources\ProductResource\RelationManagers\StoresRelationManage
 use App\Filament\Tables\Actions\AddToListAction;
 use App\Infolists\Components\TableEntry;
 use App\Models\Product;
-use App\Models\ShoppingListItem;
+use App\Tables\Columns\DiscountsColumn;
+use App\Tables\Columns\WhereToBuyColumn;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
-use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -72,18 +73,12 @@ class ProductResource extends Resource
                         ->html(),
                     TextEntry::make("ingredients")
                         ->label("Ingrediënten")
-                        // ->inlineLabel()
                         ->hidden(fn($state) => empty($state)),
                     TextEntry::make("allergens")
                         ->label("Allergenen")
-                        // ->inlineLabel()
                         ->hidden(fn($state) => empty($state)),
-                    // ->formatStateUsing(
-                    //     fn($record) => implode(", ", $record->allergens)
-                    // ),
                     TableEntry::make("nutrients")
                         ->label("Voedingswaarden")
-                        // ->inlineLabel()
                         ->hidden(fn($state) => empty($state)),
                 ])->columnSpan([
                     "md" => 2,
@@ -112,6 +107,9 @@ class ProductResource extends Resource
             ->searchable()
             ->actionsAlignment("center")
             ->columns([
+                DiscountsColumn::make("discounts.*.tiers")->extraCellAttributes(
+                    ["class" => "absolute"]
+                ),
                 Tables\Columns\Layout\Stack::make([
                     Tables\Columns\ImageColumn::make("image")
                         ->size(128)
@@ -124,15 +122,10 @@ class ProductResource extends Resource
                         Tables\Columns\TextColumn::make("name")
                             ->weight(FontWeight::Bold)
                             ->size(TextColumnSize::Large),
-                        Tables\Columns\TextColumn::make(
-                            "productStores.original_price"
-                        )->money("EUR"),
-                        Tables\Columns\TextColumn::make("stores.name")
-                            ->badge()
-                            ->wrap()
-                            ->alignRight()
-                            ->extraAttributes(["class" => "mt-2"]),
-                    ]),
+                        WhereToBuyColumn::make(
+                            "productStores"
+                        )->extraAttributes(["class" => "mt-2"]),
+                    ])->alignBetween(),
                 ])
                     ->space(2)
                     ->extraAttributes(["class" => "!flex-row sm:!flex-col"])
@@ -149,6 +142,14 @@ class ProductResource extends Resource
                     ->multiple()
                     ->preload()
                     ->relationship("stores", "name"),
+                Filter::make("discounts")
+                    ->label("Alleen aanbiedingen")
+                    ->query(
+                        fn($query, $data) => $query->when(
+                            $data["isActive"] === true,
+                            fn($query) => $query->has("discounts")
+                        )
+                    ),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()->hiddenLabel()->icon(null),
@@ -158,7 +159,8 @@ class ProductResource extends Resource
                     ->tooltip("Voeg toe aan je lijstje")
                     ->extraAttributes(["class" => "mt-2 ml-auto"])
                     ->button(),
-            ]);
+            ])
+            ->paginationPageOptions([5, 10, 25, 50]);
     }
 
     public static function getRelations(): array
