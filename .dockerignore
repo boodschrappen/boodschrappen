@@ -1,7 +1,18 @@
 **/node_modules
 **/vendor
+**/.DS_Store
+**/.dockerignore
 .git*
 .env*
-*Dockerfile
+**/*Dockerfile
 docker-compose*.yml
 README.md
+storage/
+!storage/**/.gitignore
+
+# Ignore development-related files and directories
+# For development environment, we will use mount bind to mount the source code to the container
+# So we don't need to copy the source code to the container for development
+tests/
+phpunit.xml
+phpunit.xml.dist
