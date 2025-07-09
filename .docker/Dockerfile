@@ -32,7 +32,7 @@ RUN install-php-extensions \
     redis
 
 COPY .docker/start-container /usr/local/bin/start-container
-COPY .docker/conf.d/opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
+COPY .docker/php-conf/opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 
 RUN apt update -y && apt upgrade -y && apt install -y procps
 
