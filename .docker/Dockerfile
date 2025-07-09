@@ -50,6 +50,6 @@ COPY . .
 RUN composer install --no-interaction --optimize-autoloader $COMPOSER_FLAGS \
     && php artisan storage:link \
     && php artisan optimize \
-    && php artisan icons:cache
+    && php artisan filament:optimize
 
 ENTRYPOINT ["start-container"]
