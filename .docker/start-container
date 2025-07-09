@@ -12,7 +12,6 @@ fi
 
 if [ $# -gt 0 ]; then
     exec "$@"
-    exit 0
 fi
 
 # Non-interactive migration. Will continue to run the app when migration fails.
