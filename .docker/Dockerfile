@@ -34,7 +34,10 @@ RUN install-php-extensions \
 COPY .docker/start-container /usr/local/bin/start-container
 COPY .docker/php-conf/opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 
-RUN apt update -y && apt upgrade -y && apt install -y procps
+RUN apt update -y \
+    && apt upgrade -y \
+    && apt install --no-install-recommends -y procps \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
