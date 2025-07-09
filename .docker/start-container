@@ -5,17 +5,18 @@ set -e
 role=${CONTAINER_ROLE:-app}
 env=${APP_ENV:-production}
 
-if [ $# -gt 0 ]; then
-    exec "$@"
-fi
-
-# Non-interactive migration. Will continue to run the app when migration fails.
-php artisan migrate --force --no-interaction --step --isolated=true || true
-
 if [ "$env" != "local" ]; then
     echo "Caching configuration..."
     php artisan config:cache
 fi
+
+if [ $# -gt 0 ]; then
+    exec "$@"
+    exit 0
+fi
+
+# Non-interactive migration. Will continue to run the app when migration fails.
+php artisan migrate --force --no-interaction --step --isolated=true || true
 
 if [ "$role" = "app" ]; then
 

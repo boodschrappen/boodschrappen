@@ -6,15 +6,22 @@ FROM node:${NODE_VERSION} AS node
 
 WORKDIR /app
 
+COPY package*.json .
+
+RUN npm ci
+
 COPY . .
 
-RUN npm ci && npm run build
+RUN npm run build
 
 FROM composer:${COMPOSER_VERSION} AS vendor
 
-FROM dunglas/frankenphp:1.7-php${PHP_VERSION}
+FROM dunglas/frankenphp:1.8-php${PHP_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG COMPOSER_FLAGS=--no-dev
+
+ENV WWWGROUP=nobody
 
 RUN install-php-extensions \
     pcntl \
@@ -24,17 +31,22 @@ RUN install-php-extensions \
     exif \
     redis
 
-COPY --from=vendor /usr/bin/composer /usr/bin/
-COPY .docker/php-conf/opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 COPY .docker/start-container /usr/local/bin/start-container
-COPY . /app
-COPY --from=node /app/public /app/public
+COPY .docker/conf.d/opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
+
+RUN apt update -y && apt upgrade -y && apt install -y procps
 
 WORKDIR /app
 
+COPY --from=vendor /usr/bin/composer /usr/bin/
+COPY --from=node /app/public /app/public/
+
+COPY . .
+
 # The config:cache command is executed at runtime to load environment variables.
-RUN composer install --no-interaction --optimize-autoloader --no-dev \
+RUN composer install --no-interaction --optimize-autoloader $COMPOSER_FLAGS \
     && php artisan storage:link \
-    && php artisan optimize
+    && php artisan optimize \
+    && php artisan icons:cache
 
 ENTRYPOINT ["start-container"]
