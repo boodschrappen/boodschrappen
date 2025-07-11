@@ -41,10 +41,10 @@ RUN apt update -y \
 
 WORKDIR /app
 
+COPY . .
+
 COPY --from=vendor /usr/bin/composer /usr/bin/
 COPY --from=node /app/public /app/public/
-
-COPY . .
 
 # The config:cache command is executed at runtime to load environment variables.
 RUN composer install --no-interaction --optimize-autoloader $COMPOSER_FLAGS \
