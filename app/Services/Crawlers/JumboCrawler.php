@@ -14,7 +14,8 @@ class JumboCrawler extends Crawler
     protected function getHeaders()
     {
         return [
-            'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0) Gecko/20100101 Firefox/102.0'
+            'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0) Gecko/20100101 Firefox/102.0',
+            'TE' => 'trailers'
         ];
     }
 
