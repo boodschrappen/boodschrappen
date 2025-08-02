@@ -24,11 +24,7 @@ class FetchProductsInCategory implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(private mixed $category)
-    {
-        $this->crawler = Context::get('crawler');
-        $this->store = $this->crawler->getStore();
-    }
+    public function __construct(private mixed $category) {}
 
     /**
      * Get the middleware the job should pass through.
@@ -43,6 +39,9 @@ class FetchProductsInCategory implements ShouldQueue
      */
     public function handle(): void
     {
+        $this->crawler = app(Context::get('crawler'));
+        $this->store = $this->crawler->getStore();
+
         $newProducts = $this->fetchNewProducts();
 
         $this->store->products()->attach($newProducts);
