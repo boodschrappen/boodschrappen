@@ -5,14 +5,15 @@ namespace App\Jobs;
 use App\Contracts\ProductData;
 use App\Models\ProductStore;
 use App\Services\Crawlers\Crawler;
+use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
+use Illuminate\Support\Facades\Context;
 
 class FetchProduct implements ShouldQueue
 {
-    use Queueable;
+    use Batchable, Queueable;
 
     private Crawler $crawler;
 
@@ -21,13 +22,15 @@ class FetchProduct implements ShouldQueue
      */
     public function __construct(private ProductStore $storeProduct)
     {
-        $crawlerClassName = Str::of($storeProduct->store->slug)
-            ->title()
-            ->prepend("App\Services\Crawlers\\")
-            ->append("Crawler")
-            ->toString();
+        $this->crawler = Context::get('crawler');
+    }
 
-        $this->crawler = app($crawlerClassName);
+    /**
+     * Get the middleware the job should pass through.
+     */
+    public function middleware(): array
+    {
+        return [new SkipIfBatchCancelled];
     }
 
     /**

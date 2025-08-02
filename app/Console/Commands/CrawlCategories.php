@@ -2,18 +2,19 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\FetchProduct;
+use App\Jobs\FetchProductsInCategory;
 use App\Models\Product;
-use App\Models\ProductStore;
-use App\Models\Store;
 use App\Services\Crawlers\AhCrawler;
 use App\Services\Crawlers\Crawler;
 use App\Services\Crawlers\DekamarktCrawler;
 use App\Services\Crawlers\DirkCrawler;
 use App\Services\Crawlers\JumboCrawler;
 use App\Services\Crawlers\VomarCrawler;
+use Exception;
+use Illuminate\Bus\Batch;
 use Illuminate\Console\Command;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -58,51 +59,36 @@ class CrawlCategories extends Command
 
     protected function crawl(Crawler $crawler): void
     {
+        Context::add('crawler', $crawler);
+
         $store = $crawler->getStore();
 
-        $crawler->fetchCategories()->each(
-            fn(mixed $category) => $this->processProducts(
-                $crawler,
-                $store,
-                $crawler->fetchProductsByCategory($category)
-            )
-        );
+        $this->info("Waiting for store $store->name.");
 
-        // TODO: (Soft) Delete outdated products
-        // ProductStore::query()
-        //     ->where('store_id', $store->id)
-        //     ->whereIn('product_id', )
-        //     ->delete();
-    }
+        try {
+            $categories = $crawler->fetchCategories();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
 
-    protected function processProducts(Crawler $crawler, Store $store, Collection $products)
-    {
-        // Find existing products. These will already be attached to the store.
-        $existingIds = $store->storeProducts()->pluck('raw_identifier');
+            $this->error("Initializing jobs for store $store->name failed.");
 
-        // Insert new products. Updating products is done in a separate process.
-        $newProducts = $products
-            // Find out which products need to be added.
-            ->where(fn($product) => ! $existingIds->contains($product->toStoreProduct()->raw_identifier))
-            ->mapWithKeys(function ($product) {
-                $savedProduct = $product->toProduct();
-
-                // We don't want to fill up the queue with individual product indexes.
-                Product::withoutSyncingToSearch(fn() => $savedProduct->save());
-
-                return [$savedProduct->id => $product->toStoreProduct()->getAttributes()];
-            });
-
-        $store->products()->attach($newProducts);
-
-        // Load the actual new store products.
-        $newStoreProducts = ProductStore::whereIn('product_id', $newProducts->keys())->get();
-
-        // Push new products to the queue to fetch full product details.
-        foreach ($newStoreProducts as $newStoreProduct) {
-            FetchProduct::dispatch($newStoreProduct);
+            return;
         }
 
-        Log::debug('New products: ' . json_encode($newProducts->keys()->toArray()));
+        Bus::batch(
+            $categories->map(
+                fn(mixed $category) => new FetchProductsInCategory($category)
+            )
+        )->finally(function (Batch $batch) {
+            Product::query()->searchable();
+
+            // TODO: (Soft) Delete outdated products
+            // ProductStore::query()
+            //     ->where('store_id', $store->id)
+            //     ->whereIn('product_id', )
+            //     ->delete();
+        })->name($store->name)->dispatch();
+
+        $this->info("Crawling for store $store->name has started.");
     }
 }
