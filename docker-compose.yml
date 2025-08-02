@@ -108,7 +108,7 @@ services:
             retries: 3
             timeout: 5s
 
-    pdgadmin:
+    pgadmin:
         image: dpage/pgadmin4:latest
         environment:
             - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:-user@domain.com}
@@ -117,6 +117,8 @@ services:
             - 8001:80
         networks:
             - internal
+        volumes:
+            - pgadmin-data:/var/lib/pgadmin
 
 networks:
     internal:
@@ -125,3 +127,4 @@ volumes:
     postgres-data:
     redis-data:
     meilisearch-data:
+    pgadmin-data:
