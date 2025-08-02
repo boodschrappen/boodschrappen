@@ -7,8 +7,9 @@ use App\Models\Store;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
-abstract class  Crawler
+abstract class Crawler
 {
+    /** @return Collection|\App\Data\ProductData[] */
     public function fetchAllProducts(): Collection
     {
         return $this->fetchCategories()->flatMap(
@@ -18,8 +19,10 @@ abstract class  Crawler
 
     abstract function fetchCategories(): Collection;
 
+    /** @return Collection|\App\Data\ProductData[] */
     abstract function fetchProductsByCategory(mixed $category): Collection;
 
+    /** @return Collection|\App\Data\Discounts\DiscountData[] */
     abstract function fetchDiscounts(): Collection;
 
     abstract function fetchProduct(mixed $identifier): ProductData;
