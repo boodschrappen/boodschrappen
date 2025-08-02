@@ -20,10 +20,7 @@ class FetchProduct implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(private ProductStore $storeProduct)
-    {
-        $this->crawler = Context::get('crawler');
-    }
+    public function __construct(private ProductStore $storeProduct) {}
 
     /**
      * Get the middleware the job should pass through.
@@ -38,6 +35,8 @@ class FetchProduct implements ShouldQueue
      */
     public function handle(): void
     {
+        $this->crawler = app(Context::get('crawler'));
+
         // Transform store data to a normalized format.
         $productData = $this->crawler->fetchProduct(
             $this->storeProduct->raw_identifier

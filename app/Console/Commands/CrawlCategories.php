@@ -59,7 +59,7 @@ class CrawlCategories extends Command
 
     protected function crawl(Crawler $crawler): void
     {
-        Context::add('crawler', $crawler);
+        Context::add('crawler', $crawler::class);
 
         $store = $crawler->getStore();
 

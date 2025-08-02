@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 abstract class Crawler
 {
-    /** @return Collection|\App\Data\ProductData[] */
+    /** @return Collection|\App\Contracts\ProductData[] */
     public function fetchAllProducts(): Collection
     {
         return $this->fetchCategories()->flatMap(
@@ -19,7 +19,7 @@ abstract class Crawler
 
     abstract function fetchCategories(): Collection;
 
-    /** @return Collection|\App\Data\ProductData[] */
+    /** @return Collection|\App\Contracts\ProductData[] */
     abstract function fetchProductsByCategory(mixed $category): Collection;
 
     /** @return Collection|\App\Data\Discounts\DiscountData[] */
