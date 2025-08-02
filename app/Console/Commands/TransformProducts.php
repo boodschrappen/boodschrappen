@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Product;
 use App\Models\ProductStore;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
@@ -64,11 +65,16 @@ class TransformProducts extends Command
                     $newStoreProduct = $rawData->toStoreProduct();
 
                     // Persist transformations
-                    $storeProduct->product
-                        ->fill($newProduct->toArray())
-                        ->save();
+                    Product::withoutSyncingToSearch(
+                        fn() => $storeProduct->product
+                            ->fill($newProduct->toArray())
+                            ->save()
+                    );
                     $storeProduct->fill($newStoreProduct->toArray())->save();
                 });
             });
+
+        // Ultimately, reindex the products in search.
+        Product::query()->searchable();
     }
 }
