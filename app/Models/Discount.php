@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Spatie\Activitylog\LogOptions;
 
 class Discount extends Model
 {
@@ -19,6 +20,15 @@ class Discount extends Model
     protected function casts(): array
     {
         return ["start", "end"];
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logUnguarded()
+            ->logOnlyDirty()
+            ->logExcept(["product_store_id"])
+            ->dontSubmitEmptyLogs();
     }
 
     public function tiers(): HasMany
@@ -34,7 +44,7 @@ class Discount extends Model
             "id",
             "id",
             "product_store_id",
-            "product_id"
+            "product_id",
         );
     }
 
@@ -46,7 +56,7 @@ class Discount extends Model
             "id",
             "id",
             "product_store_id",
-            "store_id"
+            "store_id",
         );
     }
 

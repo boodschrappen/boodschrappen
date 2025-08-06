@@ -10,11 +10,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Laravel\Scout\Searchable;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Product extends Model
 {
     use Searchable;
     use HasFactory;
+    use LogsActivity;
 
     protected $guarded = ["id"];
 
@@ -23,6 +26,14 @@ class Product extends Model
         "nutrients" => "array",
         "allergens" => "array",
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logUnguarded()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     public function discounts(): HasManyThrough
     {
