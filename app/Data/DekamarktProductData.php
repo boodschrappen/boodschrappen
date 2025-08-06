@@ -95,19 +95,29 @@ class DekamarktProductData extends Data implements ProductData
     {
         if (
             empty($this->ProductDeclarations) ||
-            empty($this->ProductDeclarations[0]["NutritionInformation"])
+            empty($this->ProductDeclarations[0]["NutritionInformation"]) ||
+            empty($this->Nutrition)
         ) {
             return null;
         }
 
         $rowFn = fn($row) => [$row["Text"], $row["ValueAsSold"]];
 
+        $nutritionInfo = $this->ProductDeclarations[0]["NutritionInformation"]["Voedingswaarden"]["Algemeen"];
+        $nutritionHeading = "";
+
+        if (key_exists("Standaardeenheid", $nutritionInfo)) {
+            $nutritionHeading = $nutritionInfo["Standaardeenheid"];
+        } else if (key_exists("Portiegrootte", $nutritionInfo) && key_exists("Aantal-porties-per-verpakking", $nutritionInfo)) {
+            $nutritionHeading = $nutritionInfo["Aantal-porties-per-verpakking"] . " X " . $nutritionInfo["Portiegrootte"];
+        } else if (key_exists("Portiegrootte", $nutritionInfo)) {
+            $nutritionHeading = $nutritionInfo["Portiegrootte"];
+        }
+
         return NutrientsData::from([
             "headings" => [
                 "",
-                $this->ProductDeclarations[0]["NutritionInformation"][
-                    "Voedingswaarden"
-                ]["Algemeen"]["Standaardeenheid"],
+                $nutritionHeading,
             ],
             "rows" => Arr::flatten(
                 depth: 1,

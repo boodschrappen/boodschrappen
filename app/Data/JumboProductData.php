@@ -11,7 +11,9 @@ use App\Data\Discounts\DiscountUnit;
 use App\Models\Product;
 use App\Models\ProductStore;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
 
@@ -39,7 +41,7 @@ class JumboProductData extends Data implements ProductData
         public Optional|null|array $promotion = null,
         public Optional|null|array $ingredientInfo = null,
         public Optional|null|array $nutritionalInformation = null,
-        public Optional|null|string $allergyText = null
+        public Optional|null|string $allergyText = null,
     ) {}
 
     public static function fromModel(ProductStore $storeProduct): self
@@ -72,11 +74,15 @@ class JumboProductData extends Data implements ProductData
 
     public function toStoreProduct(): ProductStore
     {
+        $price = null;
+        if ($this->price || $this->prices) {
+            $price = $this->price ?: $this->prices["price"]["amount"] / 100;
+        }
+
         return new ProductStore([
             "raw_identifier" => $this->id,
             "reduced_price" => null,
-            "original_price" =>
-                $this->price ?: $this->prices["price"]["amount"] / 100,
+            "original_price" => $price,
             "raw" => $this->toArray(),
         ]);
     }
@@ -98,7 +104,7 @@ class JumboProductData extends Data implements ProductData
                     $row["valuePer100g"],
                     $row["valuePerPortion"],
                 ],
-                $entries ?? []
+                $entries ?? [],
             ),
         ]);
     }
@@ -113,8 +119,8 @@ class JumboProductData extends Data implements ProductData
             ", ",
             array_map(
                 fn($ingredient) => $ingredient["name"],
-                $this->ingredientInfo[0]["ingredients"]
-            )
+                $this->ingredientInfo[0]["ingredients"],
+            ),
         );
     }
 
@@ -136,7 +142,7 @@ class JumboProductData extends Data implements ProductData
         return new DiscountData(
             start: Carbon::parse($this->promotion["fromDate"] / 1000),
             end: Carbon::parse($this->promotion["toDate"] / 1000),
-            tiers: $this->approximateTiers()
+            tiers: $this->approximateTiers(),
         );
     }
 
