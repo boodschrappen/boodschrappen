@@ -15,22 +15,12 @@ class DiscountTier extends Model
 
     protected $guarded = ["id"];
 
-    protected $fillable = [
-        "description",
-        "amount",
-        "unit",
-        "size",
-        "discount_id",
-        "created_at",
-        "updated_at",
-    ];
-
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty()
+            ->logUnguarded()
             ->logExcept(["discount_id"])
+            ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
 

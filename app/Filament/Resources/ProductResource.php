@@ -57,7 +57,7 @@ class ProductResource extends Resource
                     ->alignCenter()
                     ->extraImgAttributes([
                         "class" =>
-                            "shadow rounded-xl overflow-hidden p-3 bg-white max-w-sm",
+                        "shadow rounded-xl overflow-hidden p-3 bg-white max-w-sm",
                     ])
                     ->columnSpan([
                         "md" => 1,
@@ -154,6 +154,8 @@ class ProductResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make()->hiddenLabel()->icon(null),
                 Tables\Actions\EditAction::make()->hiddenLabel(),
+                Tables\Actions\Action::make('activities')
+                    ->url(fn($record) => static::getUrl('activities', ['record' => $record])),
                 AddToListAction::make()
                     ->hiddenLabel()
                     ->tooltip("Voeg toe aan je lijstje")
@@ -175,6 +177,7 @@ class ProductResource extends Resource
             "create" => Pages\CreateProduct::route("/create"),
             "view" => Pages\ViewProduct::route("/{record}"),
             "edit" => Pages\EditProduct::route("/{record}/edit"),
+            "activities" => Pages\ListProductActivities::route("/{record}/log"),
         ];
     }
 }

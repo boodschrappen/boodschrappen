@@ -12,6 +12,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
 use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\Log;
+use Spatie\Activitylog\Facades\CauserResolver;
 
 class FetchProductsInCategory implements ShouldQueue
 {
@@ -42,6 +43,8 @@ class FetchProductsInCategory implements ShouldQueue
         $this->crawler = app(Context::get('crawler'));
         $this->store = $this->crawler->getStore();
 
+        CauserResolver::setCauser($this->store);
+
         $newProducts = $this->fetchNewProducts();
 
         $this->store->products()->attach($newProducts);
@@ -55,7 +58,6 @@ class FetchProductsInCategory implements ShouldQueue
                     fn($newStoreProduct) => new FetchProduct($newStoreProduct)
                 ));
             });
-
 
         Log::debug("New products for {$this->store->name}: " . json_encode($newProducts->keys()->toArray()));
     }

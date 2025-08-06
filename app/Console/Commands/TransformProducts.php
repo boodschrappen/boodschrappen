@@ -4,8 +4,10 @@ namespace App\Console\Commands;
 
 use App\Models\Product;
 use App\Models\ProductStore;
+use App\Models\Store;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\Facades\CauserResolver;
 
 class TransformProducts extends Command
 {
@@ -15,7 +17,7 @@ class TransformProducts extends Command
      * @var string
      */
     protected $signature = 'app:transform-products
-                            {storeSlug : A store slug of which products will be re-transformed}';
+                            {storeSlug? : A store slug of which products will be re-transformed}';
 
     /**
      * The console command description.
@@ -47,6 +49,8 @@ class TransformProducts extends Command
             ->prepend("App\Data\\")
             ->append("ProductData")
             ->toString();
+
+        CauserResolver::setCauser($store = Store::firstWhere("slug", $slug));
 
         // Fetch raw values from database
         ProductStore::query()

@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
 use Illuminate\Support\Facades\Context;
+use Spatie\Activitylog\Facades\CauserResolver;
 
 class FetchProduct implements ShouldQueue
 {
@@ -36,6 +37,8 @@ class FetchProduct implements ShouldQueue
     public function handle(): void
     {
         $this->crawler = app(Context::get('crawler'));
+
+        CauserResolver::setCauser($this->crawler->getStore());
 
         // Transform store data to a normalized format.
         $productData = $this->crawler->fetchProduct(

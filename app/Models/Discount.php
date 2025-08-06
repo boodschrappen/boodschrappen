@@ -26,8 +26,8 @@ class Discount extends Model
     {
         return LogOptions::defaults()
             ->logUnguarded()
-            ->logOnlyDirty()
             ->logExcept(["product_store_id"])
+            ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
 
