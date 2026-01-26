@@ -208,6 +208,13 @@ class AhProductData extends Data implements ProductData
                             "unit" => DiscountUnit::Percentage,
                             "size" => 2,
                         ];
+                    case "DISCOUNT_ONE_FREE":
+                        return [
+                            ...$defaults,
+                            "amount" => 50,
+                            "unit" => DiscountUnit::Percentage,
+                            "size" => 2,
+                        ];
                     case "DISCOUNT_X_PLUS_Y_FREE":
                         $size = $offer["count"] + $offer["freeCount"];
                         return [
