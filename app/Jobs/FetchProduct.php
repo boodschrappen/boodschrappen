@@ -3,8 +3,10 @@
 namespace App\Jobs;
 
 use App\Contracts\ProductData;
+use App\Models\Product;
 use App\Models\ProductStore;
 use App\Services\Crawlers\Crawler;
+use App\Services\ProductMerger;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -55,7 +57,7 @@ class FetchProduct implements ShouldQueue
 
         // Persist transformations.
         $this->storeProduct->product
-            ->fill($mergedProductData->toProduct()->toArray())
+            ->fill($this->mergeWithOtherStores($mergedProductData)->toProduct()->toArray())
             ->save();
         $this->storeProduct
             ->fill($mergedProductData->toStoreProduct()->toArray())
@@ -63,6 +65,11 @@ class FetchProduct implements ShouldQueue
 
         // Store any discounts for the product.
         $this->processDiscounts($mergedProductData);
+    }
+
+    protected function mergeWithOtherStores(ProductData $productData): ProductData
+    {
+        return new ProductMerger($productData)->productData;
     }
 
     protected function processDiscounts(ProductData $productData)
