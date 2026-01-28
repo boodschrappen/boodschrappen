@@ -29,9 +29,9 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           cache-from: |
-            type=gha,scope=${{ github.repository }}-main-linux/amd64
-            type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-linux/amd64
-          cache-to: type=gha,mode=max,scope=${{ github.repository }}-${{ github.ref_name }}-linux/amd64
+            type=gha,scope=${{ github.repository }}-main
+            type=gha,scope=${{ github.repository }}-${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=${{ github.repository }}-${{ github.ref_name }}
           context: .
           file: .docker/Dockerfile
           load: true
@@ -53,15 +53,9 @@ jobs:
           sarif_file: ${{ steps.scan.outputs.sarif }}
 
   publish-docker-image:
-    runs-on: ${{ matrix.platform == 'linux/amd64' && 'ubuntu-latest' || matrix.platform == 'linux/arm64' && 'ubuntu-24.04-arm' }}
+    runs-on: ubuntu-latest
     needs: scan-image
     if: ${{ github.event_name != 'pull_request' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -95,10 +89,10 @@ jobs:
       - name: Build container and push to GitHub Container Registry
         uses: docker/build-push-action@v6
         with:
-          cache-from: type=gha,scope=${{ github.repository }}-${{ github.ref_name }}-${{ matrix.platform }}
-          cache-to: type=gha,mode=max,scope=${{ github.repository }}-${{ github.ref_name }}-${{ matrix.platform }}
+          cache-from: type=gha,scope=${{ github.repository }}-${{ github.ref_name }}
+          cache-to: type=gha,mode=max,scope=${{ github.repository }}-${{ github.ref_name }}
           file: .docker/Dockerfile
-          platforms: ${{ matrix.platform }}
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
