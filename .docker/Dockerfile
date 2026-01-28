@@ -16,7 +16,7 @@ RUN npm run build
 
 FROM composer:${COMPOSER_VERSION} AS vendor
 
-FROM dunglas/frankenphp:1.8-php${PHP_VERSION}
+FROM dunglas/frankenphp:1.11-php${PHP_VERSION}
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG COMPOSER_FLAGS=--no-dev
