@@ -2,6 +2,7 @@
 
 namespace App\Services\Crawlers;
 
+use App\Data\Discounts\DiscountData;
 use App\Contracts\ProductData;
 use App\Models\Store;
 use Illuminate\Support\Collection;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 abstract class Crawler
 {
-    /** @return Collection|\App\Contracts\ProductData[] */
+    /** @return Collection|ProductData[] */
     public function fetchAllProducts(): Collection
     {
         return $this->fetchCategories()->flatMap(
@@ -19,10 +20,10 @@ abstract class Crawler
 
     abstract function fetchCategories(): Collection;
 
-    /** @return Collection|\App\Contracts\ProductData[] */
+    /** @return Collection|ProductData[] */
     abstract function fetchProductsByCategory(mixed $category): Collection;
 
-    /** @return Collection|\App\Data\Discounts\DiscountData[] */
+    /** @return Collection|DiscountData[] */
     abstract function fetchDiscounts(): Collection;
 
     abstract function fetchProduct(mixed $identifier): ProductData;

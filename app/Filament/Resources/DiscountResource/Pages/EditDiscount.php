@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DiscountResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use App\Filament\Resources\DiscountResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -13,7 +14,7 @@ class EditDiscount extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 }

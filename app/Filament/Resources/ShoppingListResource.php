@@ -2,14 +2,25 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Grouping\Group;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\CheckboxColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\EditAction;
+use Filament\Support\Enums\Width;
+use Filament\Actions\DeleteAction;
+use App\Filament\Resources\ShoppingListResource\Pages\ListShoppingLists;
 use App\Filament\Resources\ShoppingListResource\Pages;
 use App\Models\Product;
 use App\Models\ProductStore;
 use App\Models\ShoppingListItem;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Blade;
@@ -19,7 +30,7 @@ class ShoppingListResource extends Resource
 {
     protected static ?string $model = ShoppingListItem::class;
 
-    protected static ?string $navigationIcon = "heroicon-o-shopping-cart";
+    protected static string | \BackedEnum | null $navigationIcon = "heroicon-o-shopping-cart";
 
     protected static ?string $navigationLabel = "Lijstje";
 
@@ -29,16 +40,16 @@ class ShoppingListResource extends Resource
 
     protected static ?string $pluralModelLabel = "lijstje";
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form->columns(1)->schema([
-            Forms\Components\TextInput::make("amount")
+        return $schema->columns(1)->components([
+            TextInput::make("amount")
                 ->label("Aantal")
                 ->integer()
                 ->default(1)
                 ->minValue(1)
                 ->autofocus(),
-            Forms\Components\Select::make("product_store_id")
+            Select::make("product_store_id")
                 ->label("Product")
                 ->allowHtml()
                 ->required()
@@ -72,7 +83,7 @@ class ShoppingListResource extends Resource
         return $table
             ->modifyQueryUsing(fn($query) => $query->orderBy("checked", "asc"))
             ->defaultGroup(
-                Tables\Grouping\Group::make("storeProduct.store.name")->label(
+                Group::make("storeProduct.store.name")->label(
                     "Winkel"
                 )
             )
@@ -82,18 +93,18 @@ class ShoppingListResource extends Resource
                     : ""
             )
             ->columns([
-                Tables\Columns\Layout\Split::make([
-                    Tables\Columns\CheckboxColumn::make("checked")
+                Split::make([
+                    CheckboxColumn::make("checked")
                         ->label("")
                         ->grow(false),
-                    Tables\Columns\ImageColumn::make(
+                    ImageColumn::make(
                         "storeProduct.product.image"
                     )
                         ->grow(false)
                         ->width(64)
                         ->extraImgAttributes(["class" => "!object-contain"]),
-                    Tables\Columns\Layout\Stack::make([
-                        Tables\Columns\TextColumn::make(
+                    Stack::make([
+                        TextColumn::make(
                             "storeProduct.product.name"
                         )
                             ->default(fn($record) => $record->description)
@@ -104,7 +115,7 @@ class ShoppingListResource extends Resource
                                         $record->storeProduct->product_id,
                                 ])
                             ),
-                        Tables\Columns\TextColumn::make(
+                        TextColumn::make(
                             "amount"
                         )->formatStateUsing(
                             fn($state) => $state .
@@ -114,12 +125,12 @@ class ShoppingListResource extends Resource
                 ]),
             ])
             ->recordAction(null)
-            ->actions([
-                Tables\Actions\EditAction::make()
-                    ->modalWidth(MaxWidth::Small)
+            ->recordActions([
+                EditAction::make()
+                    ->modalWidth(Width::Small)
                     ->hiddenLabel()
                     ->extraAttributes(["class" => "ml-auto"]),
-                Tables\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->modal(false)
                     ->hiddenLabel(),
             ])
@@ -134,7 +145,7 @@ class ShoppingListResource extends Resource
     public static function getPages(): array
     {
         return [
-            "index" => Pages\ListShoppingLists::route("/"),
+            "index" => ListShoppingLists::route("/"),
         ];
     }
 

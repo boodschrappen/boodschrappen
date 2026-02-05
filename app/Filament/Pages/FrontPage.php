@@ -2,17 +2,18 @@
 
 namespace App\Filament\Pages;
 
+use Filament\Panel;
+use Filament\Schemas\Schema;
+use Filament\Actions\Action;
 use App\Filament\Resources\ProductResource\Pages\ListProducts;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 
 class FrontPage extends Page
 {
-    protected static string $view = 'filament.pages.front-page';
+    protected string $view = 'filament.pages.front-page';
 
     protected static string $routePath = '/';
 
@@ -20,7 +21,7 @@ class FrontPage extends Page
 
     public string $query = '';
 
-    public static function getRoutePath(): string
+    public static function getRoutePath(Panel $panel): string
     {
         return static::$routePath;
     }
@@ -30,10 +31,10 @@ class FrontPage extends Page
         return '';
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('query')
                     ->hiddenLabel()
                     ->extraAlpineAttributes(['wire:keydown.enter' => 'search', 'class' => '!w-96 py-3'])

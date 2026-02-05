@@ -2,8 +2,8 @@
 
 namespace App\Filament\Tables\Actions;
 
+use Filament\Actions\Action;
 use App\Filament\Actions\Traits\AddToList;
-use Filament\Tables\Actions\Action;
 
 class AddToListAction extends Action
 {

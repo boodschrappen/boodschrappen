@@ -2,13 +2,24 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Flex;
+use Filament\Forms\Components\Select;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\EditAction;
+use App\Filament\Resources\DiscountResource\Pages\ListDiscounts;
+use App\Filament\Resources\DiscountResource\Pages\CreateDiscount;
+use App\Filament\Resources\DiscountResource\Pages\EditDiscount;
 use App\Filament\Resources\DiscountResource\Pages;
 use App\Filament\Resources\DiscountResource\RelationManagers;
 use App\Models\Discount;
 use App\Models\Product;
 use App\Models\ProductStore;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -21,7 +32,7 @@ class DiscountResource extends Resource
 {
     protected static ?string $model = Discount::class;
 
-    protected static ?string $navigationIcon = "heroicon-o-currency-euro";
+    protected static string | \BackedEnum | null $navigationIcon = "heroicon-o-currency-euro";
 
     protected static ?int $navigationSort = 2;
 
@@ -29,35 +40,35 @@ class DiscountResource extends Resource
 
     protected static ?string $pluralModelLabel = "aanbiedingen";
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form->columns(3)->schema([
-            Forms\Components\Repeater::make("tiers")
+        return $schema->columns(3)->components([
+            Repeater::make("tiers")
                 ->hiddenLabel()
                 ->itemLabel("Aanbieding")
                 ->label("Aanbiedingen")
                 ->columnSpan(2)
                 ->relationship("tiers")
                 ->schema([
-                    Forms\Components\TextInput::make("description")->maxLength(
+                    TextInput::make("description")->maxLength(
                         255
                     ),
-                    Forms\Components\Split::make([
-                        Forms\Components\TextInput::make("amount")->numeric(),
-                        Forms\Components\Select::make("unit")->options([
+                    Flex::make([
+                        TextInput::make("amount")->numeric(),
+                        Select::make("unit")->options([
                             "money" => "money",
                             "percentage" => "percentage",
                         ]),
-                        Forms\Components\TextInput::make("size")->numeric(),
+                        TextInput::make("size")->numeric(),
                     ]),
                 ]),
-            Forms\Components\Section::make()
+            Section::make()
                 ->columnSpan(1)
                 ->extraAttributes(["class" => "sticky top-0"])
                 ->schema([
-                    Forms\Components\DatePicker::make("start")->required(),
-                    Forms\Components\DatePicker::make("end")->required(),
-                    Forms\Components\Select::make("product_store_id")
+                    DatePicker::make("start")->required(),
+                    DatePicker::make("end")->required(),
+                    Select::make("product_store_id")
                         ->label("Product in winkel")
                         ->allowHtml()
                         ->required()
@@ -97,18 +108,18 @@ class DiscountResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make("start")->date()->sortable(),
-                Tables\Columns\TextColumn::make("end")->date()->sortable(),
-                Tables\Columns\TextColumn::make("store.name")->sortable(),
-                Tables\Columns\TextColumn::make("product.name")->sortable(),
-                Tables\Columns\TextColumn::make(
+                TextColumn::make("start")->date()->sortable(),
+                TextColumn::make("end")->date()->sortable(),
+                TextColumn::make("store.name")->sortable(),
+                TextColumn::make("product.name")->sortable(),
+                TextColumn::make(
                     "tiers.description"
                 )->sortable(),
             ])
             ->filters([
                 //
             ])
-            ->actions([Tables\Actions\EditAction::make()]);
+            ->recordActions([EditAction::make()]);
     }
 
     public static function getRelations(): array
@@ -121,9 +132,9 @@ class DiscountResource extends Resource
     public static function getPages(): array
     {
         return [
-            "index" => Pages\ListDiscounts::route("/"),
-            "create" => Pages\CreateDiscount::route("/create"),
-            "edit" => Pages\EditDiscount::route("/{record}/edit"),
+            "index" => ListDiscounts::route("/"),
+            "create" => CreateDiscount::route("/create"),
+            "edit" => EditDiscount::route("/{record}/edit"),
         ];
     }
 

@@ -2,9 +2,20 @@
 
 namespace App\Filament\Resources\ProductResource\RelationManagers;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Flex;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
 use Filament\Forms\Components\Livewire;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -15,17 +26,17 @@ class DiscountsRelationManager extends RelationManager
 {
     protected static string $relationship = 'discounts';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->columns(1)
-            ->schema([
-                Forms\Components\Split::make([
-                    Forms\Components\DatePicker::make('start')
+            ->components([
+                Flex::make([
+                    DatePicker::make('start')
                         ->required(),
-                    Forms\Components\DatePicker::make('end')
+                    DatePicker::make('end')
                         ->required(),
-                    Forms\Components\Select::make('product_store_id')
+                    Select::make('product_store_id')
                         ->label('Winkel')
                         ->options(
                             $this->ownerRecord
@@ -37,16 +48,16 @@ class DiscountsRelationManager extends RelationManager
                         ->required()
                         ->columns(2)
                 ]),
-                Forms\Components\Repeater::make('tiers')
+                Repeater::make('tiers')
                     ->schema([
-                        Forms\Components\TextInput::make('description')
+                        TextInput::make('description')
                             ->maxLength(255),
-                        Forms\Components\Split::make([
-                            Forms\Components\TextInput::make('amount')
+                        Flex::make([
+                            TextInput::make('amount')
                                 ->numeric(),
-                            Forms\Components\Select::make('unit')
+                            Select::make('unit')
                                 ->options(['money', 'percentage']),
-                            Forms\Components\TextInput::make('size')
+                            TextInput::make('size')
                                 ->numeric(),
                         ])
                     ]),
@@ -58,22 +69,22 @@ class DiscountsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('start')
             ->columns([
-                Tables\Columns\TextColumn::make('start')->date(),
-                Tables\Columns\TextColumn::make('end')->date(),
+                TextColumn::make('start')->date(),
+                TextColumn::make('end')->date(),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

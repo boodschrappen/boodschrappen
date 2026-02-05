@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Widgets\AccountWidget;
+use Filament\Widgets\FilamentInfoWidget;
 use App\Filament\Pages\FrontPage;
 use App\Filament\Pages\PulseDashboard;
 use Filament\FontProviders\LocalFontProvider;
@@ -65,8 +67,8 @@ class AppPanelProvider extends PanelProvider
                 for: "App\\Filament\\Widgets"
             )
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                AccountWidget::class,
+                FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

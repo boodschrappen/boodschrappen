@@ -2,12 +2,13 @@
 
 namespace App\Filament\Resources\ShoppingListResource\Pages;
 
+use Filament\Actions\CreateAction;
+use Filament\Support\Enums\Width;
 use App\Filament\Resources\ShoppingListResource;
 use App\Models\Product;
 use App\Models\ShoppingListItem;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Enums\MaxWidth;
 
 class ListShoppingLists extends ListRecords
 {
@@ -16,8 +17,8 @@ class ListShoppingLists extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-                ->modalWidth(MaxWidth::Small)
+            CreateAction::make()
+                ->modalWidth(Width::Small)
                 ->createAnother(false)
                 ->using(function (array $data) {
                     $existingListItem = ShoppingListItem::firstWhere(

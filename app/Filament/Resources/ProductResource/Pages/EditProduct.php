@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\ProductResource\Pages;
 
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use App\Filament\Resources\ProductResource;
 use App\Jobs\FetchProduct;
 use App\Models\Product;
@@ -18,7 +20,7 @@ class EditProduct extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('fetch')
+            Action::make('fetch')
                 ->label('Product heropvragen')
                 ->action(function (Product $record) {
                     try {
@@ -38,7 +40,7 @@ class EditProduct extends EditRecord
                             ->send();
                     }
                 }),
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 }

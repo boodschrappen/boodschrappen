@@ -2,6 +2,21 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Schemas\Components\Group;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Support\Enums\TextSize;
+use Filament\Actions\ViewAction;
+use Filament\Actions\EditAction;
+use App\Filament\Resources\ProductResource\Pages\ListProducts;
+use App\Filament\Resources\ProductResource\Pages\CreateProduct;
+use App\Filament\Resources\ProductResource\Pages\ViewProduct;
+use App\Filament\Resources\ProductResource\Pages\EditProduct;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers\DiscountsRelationManager;
 use App\Filament\Resources\ProductResource\RelationManagers\StoresRelationManager;
@@ -11,14 +26,11 @@ use App\Models\Product;
 use App\Tables\Columns\DiscountsColumn;
 use App\Tables\Columns\WhereToBuyColumn;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Infolists;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -28,7 +40,7 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = "heroicon-o-rectangle-stack";
+    protected static string | \BackedEnum | null $navigationIcon = "heroicon-o-rectangle-stack";
 
     protected static ?int $navigationSort = 1;
 
@@ -45,11 +57,11 @@ class ProductResource extends Resource
         ];
     }
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
-                Infolists\Components\ImageEntry::make("image")
+        return $schema
+            ->components([
+                ImageEntry::make("image")
                     ->hiddenLabel()
                     ->hidden(fn($state) => empty($state))
                     ->height("auto")
@@ -62,12 +74,12 @@ class ProductResource extends Resource
                     ->columnSpan([
                         "md" => 1,
                     ]),
-                InfoLists\Components\Group::make([
-                    Infolists\Components\TextEntry::make("name")
+                Group::make([
+                    TextEntry::make("name")
                         ->hiddenLabel()
                         ->weight(FontWeight::Bold)
                         ->size("text-2xl"),
-                    Infolists\Components\TextEntry::make("summary")
+                    TextEntry::make("summary")
                         ->hiddenLabel()
                         ->hidden(fn($state) => empty($state))
                         ->html(),
@@ -87,17 +99,17 @@ class ProductResource extends Resource
             ->columns(["md" => 3, "lg" => 3]);
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form->schema([
-            Forms\Components\TagsInput::make("gtins")->nestedRecursiveRules([
+        return $schema->components([
+            TagsInput::make("gtins")->nestedRecursiveRules([
                 "numeric",
             ]),
-            Forms\Components\TextInput::make("name")
+            TextInput::make("name")
                 ->required()
                 ->maxLength(255),
-            Forms\Components\TextInput::make("summary")->required(),
-            Forms\Components\TextInput::make("description")->required(),
+            TextInput::make("summary")->required(),
+            TextInput::make("description")->required(),
         ]);
     }
 
@@ -105,23 +117,23 @@ class ProductResource extends Resource
     {
         return $table
             ->searchable()
-            ->actionsAlignment("center")
+            ->recordActionsAlignment("center")
             ->columns([
                 DiscountsColumn::make("discounts.*.tiers")->extraCellAttributes(
                     ["class" => "absolute"]
                 ),
-                Tables\Columns\Layout\Stack::make([
-                    Tables\Columns\ImageColumn::make("image")
+                Stack::make([
+                    ImageColumn::make("image")
                         ->size(128)
                         ->grow(false)
                         ->extraImgAttributes([
                             "loading" => "lazy",
                             "class" => "m-2",
                         ]),
-                    Tables\Columns\Layout\Stack::make([
-                        Tables\Columns\TextColumn::make("name")
+                    Stack::make([
+                        TextColumn::make("name")
                             ->weight(FontWeight::Bold)
-                            ->size(TextColumnSize::Large),
+                            ->size(TextSize::Large),
                         WhereToBuyColumn::make(
                             "productStores"
                         )->extraAttributes(["class" => "mt-2"]),
@@ -151,9 +163,9 @@ class ProductResource extends Resource
                         )
                     ),
             ])
-            ->actions([
-                Tables\Actions\ViewAction::make()->hiddenLabel()->icon(null),
-                Tables\Actions\EditAction::make()->hiddenLabel(),
+            ->recordActions([
+                ViewAction::make()->hiddenLabel()->icon(null),
+                EditAction::make()->hiddenLabel(),
                 AddToListAction::make()
                     ->hiddenLabel()
                     ->tooltip("Voeg toe aan je lijstje")
@@ -171,10 +183,10 @@ class ProductResource extends Resource
     public static function getPages(): array
     {
         return [
-            "index" => Pages\ListProducts::route("/"),
-            "create" => Pages\CreateProduct::route("/create"),
-            "view" => Pages\ViewProduct::route("/{record}"),
-            "edit" => Pages\EditProduct::route("/{record}/edit"),
+            "index" => ListProducts::route("/"),
+            "create" => CreateProduct::route("/create"),
+            "view" => ViewProduct::route("/{record}"),
+            "edit" => EditProduct::route("/{record}/edit"),
         ];
     }
 }

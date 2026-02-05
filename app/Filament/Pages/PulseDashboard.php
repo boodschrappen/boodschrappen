@@ -2,6 +2,8 @@
 
 namespace App\Filament\Pages;
 
+use Filament\Pages\Dashboard;
+use Filament\Support\Enums\Size;
 use Dotswan\FilamentLaravelPulse\Widgets\PulseCache;
 use Dotswan\FilamentLaravelPulse\Widgets\PulseExceptions;
 use Dotswan\FilamentLaravelPulse\Widgets\PulseQueues;
@@ -13,9 +15,8 @@ use Dotswan\FilamentLaravelPulse\Widgets\PulseUsage;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Pages\Dashboard\Concerns\HasFiltersAction;
-use Filament\Support\Enums\ActionSize;
 
-class PulseDashboard extends \Filament\Pages\Dashboard
+class PulseDashboard extends Dashboard
 {
     use HasFiltersAction;
 
@@ -25,14 +26,14 @@ class PulseDashboard extends \Filament\Pages\Dashboard
 
     protected static ?int $navigationSort = 100;
 
-    protected static ?string $navigationIcon = "heroicon-o-presentation-chart-line";
+    protected static string | \BackedEnum | null $navigationIcon = "heroicon-o-presentation-chart-line";
 
     public static function canAccess(): bool
     {
         return auth()->user()?->is_admin ?? false;
     }
 
-    public function getColumns(): int|string|array
+    public function getColumns(): int|array
     {
         return 12;
     }
@@ -63,7 +64,7 @@ class PulseDashboard extends \Filament\Pages\Dashboard
             ])
                 ->label(__("Filter"))
                 ->icon("heroicon-m-funnel")
-                ->size(ActionSize::Small)
+                ->size(Size::Small)
                 ->color("gray")
                 ->button(),
         ];
