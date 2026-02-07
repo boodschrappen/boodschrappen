@@ -37,7 +37,7 @@ class FrontPage extends Page
             ->components([
                 TextInput::make('query')
                     ->hiddenLabel()
-                    ->extraAlpineAttributes(['wire:keydown.enter' => 'search', 'class' => '!w-96 py-3'])
+                    ->extraAlpineAttributes(['wire:keydown.enter' => 'search', 'class' => 'w-96! py-3'])
                     ->prefixAction(
                         Action::make('search')
                             ->extraAttributes(['id' => 'search-btn'])

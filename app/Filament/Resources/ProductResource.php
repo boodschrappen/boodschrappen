@@ -69,7 +69,7 @@ class ProductResource extends Resource
                     ->alignCenter()
                     ->extraImgAttributes([
                         "class" =>
-                            "shadow rounded-xl overflow-hidden p-3 bg-white max-w-sm",
+                            "shadow-sm rounded-xl overflow-hidden p-3 bg-white max-w-sm",
                     ])
                     ->columnSpan([
                         "md" => 1,
@@ -140,7 +140,7 @@ class ProductResource extends Resource
                     ])->alignBetween(),
                 ])
                     ->space(2)
-                    ->extraAttributes(["class" => "!flex-row sm:!flex-col"])
+                    ->extraAttributes(["class" => "flex-row! sm:flex-col!"])
                     ->alignCenter(),
             ])
             ->contentGrid([

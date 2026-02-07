@@ -102,7 +102,7 @@ class ShoppingListResource extends Resource
                     )
                         ->grow(false)
                         ->width(64)
-                        ->extraImgAttributes(["class" => "!object-contain"]),
+                        ->extraImgAttributes(["class" => "object-contain!"]),
                     Stack::make([
                         TextColumn::make(
                             "storeProduct.product.name"

@@ -1,6 +1,6 @@
 <x-dynamic-component :component="$getEntryWrapperView()" :entry="$entry">
     <x-filament::grid class="gap-4">
-        <table class="filament-table-entry w-full table-auto divide-y divide-gray-200 text-start dark:divide-white/5 shadow rounded-xl bg-white">
+        <table class="filament-table-entry w-full table-auto divide-y divide-gray-200 text-start dark:divide-white/5 shadow-sm rounded-xl bg-white">
             <thead>
                 <tr>
                     @foreach($getState()['headings'] as $heading)
