@@ -31,4 +31,9 @@ class ProductStore extends Model
     {
         return $this->hasMany(Discount::class);
     }
+
+    public function shoppingListItem(): BelongsTo
+    {
+        return $this->belongsTo(ShoppingListItem::class);
+    }
 }

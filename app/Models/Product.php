@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Laravel\Scout\Searchable;
 
 class Product extends Model
@@ -23,6 +24,8 @@ class Product extends Model
         "nutrients" => "array",
         "allergens" => "array",
     ];
+
+    protected $with = ['stores', 'discounts', 'productStores.store', 'shoppingListItem'];
 
     public function discounts(): HasManyThrough
     {
@@ -41,6 +44,11 @@ class Product extends Model
     public function productStores(): HasMany
     {
         return $this->hasMany(ProductStore::class);
+    }
+
+    public function shoppingListItem(): HasOneThrough
+    {
+        return $this->hasOneThrough(ShoppingListItem::class, ProductStore::class);
     }
 
     /**

@@ -6,6 +6,9 @@ use App\Models\ShoppingListItem;
 use Filament\Actions\Concerns\CanCustomizeProcess;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @mixin \Filament\Actions\Action
+ */
 trait AddToList
 {
     use CanCustomizeProcess;
@@ -25,12 +28,7 @@ trait AddToList
             fn($record) => "$record->name is toegevoegd aan je lijstje"
         );
 
-        $this->badge(
-            fn($record) => ShoppingListItem::firstWhere(
-                "product_store_id",
-                $record->productStores()->first()->id
-            )?->amount
-        );
+        $this->badge(fn($record) => $record->shoppingListItem?->amount);
 
         $this->badgeColor("info");
 
@@ -45,7 +43,7 @@ trait AddToList
         $this->action(function (): void {
             $this->process(function (Model $record) {
                 // TODO: Select the cheapest option. Maybe using a scope?
-                $storeProductId = $record->productStores()->first()->id;
+                $storeProductId = $record->productStores->first()->id;
 
                 $existingListItem = ShoppingListItem::firstWhere(
                     "product_store_id",

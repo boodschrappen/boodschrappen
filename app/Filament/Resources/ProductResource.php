@@ -32,7 +32,6 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 
 class ProductResource extends Resource
 {
@@ -116,7 +115,6 @@ class ProductResource extends Resource
         return $table
             ->searchable()
             ->recordActionsAlignment("center")
-            ->modifyQueryUsing(fn(Builder $query) => $query->with('discounts.tiers', 'productStores.store'))
             ->columns([
                 DiscountsColumn::make("discounts.*.tiers")->extraCellAttributes(
                     ["class" => "absolute"]
