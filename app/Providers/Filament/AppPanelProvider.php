@@ -85,7 +85,7 @@ class AppPanelProvider extends PanelProvider
                 PanelsRenderHook::TOPBAR_END,
                 fn() => new HtmlString(
                     Blade::render(
-                        '@guest <x-filament::button :href="filament()->getLoginUrl()" tag="a">Inloggen</x-filament::button> @endguest'
+                        '@guest <div class="ml-4"><x-filament::button :href="filament()->getLoginUrl()" tag="a">Inloggen</x-filament::button></div> @endguest'
                     )
                 )
             )
