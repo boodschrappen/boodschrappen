@@ -25,16 +25,14 @@ use App\Infolists\Components\TableEntry;
 use App\Models\Product;
 use App\Tables\Columns\DiscountsColumn;
 use App\Tables\Columns\WhereToBuyColumn;
-use Filament\Forms;
-use Filament\Infolists;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductResource extends Resource
 {
@@ -64,8 +62,8 @@ class ProductResource extends Resource
                 ImageEntry::make("image")
                     ->hiddenLabel()
                     ->hidden(fn($state) => empty($state))
-                    ->height("auto")
-                    ->width("100%")
+                    ->imageHeight("auto")
+                    ->imageWidth("100%")
                     ->alignCenter()
                     ->extraImgAttributes([
                         "class" =>
@@ -118,13 +116,14 @@ class ProductResource extends Resource
         return $table
             ->searchable()
             ->recordActionsAlignment("center")
+            ->modifyQueryUsing(fn(Builder $query) => $query->with('discounts.tiers', 'productStores.store'))
             ->columns([
                 DiscountsColumn::make("discounts.*.tiers")->extraCellAttributes(
                     ["class" => "absolute"]
                 ),
                 Stack::make([
                     ImageColumn::make("image")
-                        ->size(128)
+                        ->imageSize(128)
                         ->grow(false)
                         ->extraImgAttributes([
                             "loading" => "lazy",
