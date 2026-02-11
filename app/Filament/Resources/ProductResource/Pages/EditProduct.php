@@ -8,9 +8,10 @@ use App\Filament\Resources\ProductResource;
 use App\Jobs\FetchProduct;
 use App\Models\Product;
 use App\Models\ProductStore;
-use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\Context;
+use Illuminate\Support\Str;
 use Throwable;
 
 class EditProduct extends EditRecord
@@ -24,7 +25,15 @@ class EditProduct extends EditRecord
                 ->label('Product heropvragen')
                 ->action(function (Product $record) {
                     try {
-                        $record->productStores->each(fn(ProductStore $productStore) => FetchProduct::dispatch($productStore));
+                        $record->productStores->each(function (ProductStore $productStore) {
+                            $crawler = Str::of($productStore->store->slug)
+                                ->title()
+                                ->prepend('App\Services\Crawlers\\')
+                                ->append('Crawler')
+                                ->toString();
+                            Context::add('crawler', $crawler);
+                            FetchProduct::dispatch($productStore);
+                        });
 
                         Notification::make()
                             ->title('Product wordt opgehaald')

@@ -7,6 +7,7 @@ use Filament\Infolists\Components\ImageEntry;
 use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TextArea;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -17,15 +18,15 @@ use App\Filament\Resources\ProductResource\Pages\ListProducts;
 use App\Filament\Resources\ProductResource\Pages\CreateProduct;
 use App\Filament\Resources\ProductResource\Pages\ViewProduct;
 use App\Filament\Resources\ProductResource\Pages\EditProduct;
-use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers\DiscountsRelationManager;
 use App\Filament\Resources\ProductResource\RelationManagers\StoresRelationManager;
 use App\Filament\Tables\Actions\AddToListAction;
-use App\Infolists\Components\TableEntry;
 use App\Models\Product;
 use App\Tables\Columns\DiscountsColumn;
 use App\Tables\Columns\WhereToBuyColumn;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\RepeatableEntry\TableColumn;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Filters\Filter;
@@ -37,7 +38,7 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = "heroicon-o-rectangle-stack";
+    protected static string|\BackedEnum|null $navigationIcon = "heroicon-o-rectangle-stack";
 
     protected static ?int $navigationSort = 1;
 
@@ -86,8 +87,26 @@ class ProductResource extends Resource
                     TextEntry::make("allergens")
                         ->label("Allergenen")
                         ->hidden(fn($state) => empty($state)),
-                    TableEntry::make("nutrients")
+                    RepeatableEntry::make("nutrients")
                         ->label("Voedingswaarden")
+                        ->hidden(fn($state) => empty($state))
+                        ->table(
+                            fn($record) => array_map(
+                                fn($heading) => TableColumn::make($heading),
+                                $record->nutrients["headings"],
+                            ),
+                        )
+                        ->schema(
+                            fn($state) => array_map(
+                                fn($index) => TextEntry::make($index),
+                                array_keys($state),
+                            ),
+                        )
+                        ->state(
+                            fn($record) => $record->nutrients
+                                ? $record->nutrients["rows"]
+                                : null,
+                        )
                         ->hidden(fn($state) => empty($state)),
                 ])->columnSpan([
                     "md" => 2,
@@ -99,14 +118,10 @@ class ProductResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TagsInput::make("gtins")->nestedRecursiveRules([
-                "numeric",
-            ]),
-            TextInput::make("name")
-                ->required()
-                ->maxLength(255),
-            TextInput::make("summary")->required(),
-            TextInput::make("description")->required(),
+            TagsInput::make("gtins")->nestedRecursiveRules(["numeric"]),
+            TextInput::make("name")->required()->maxLength(255),
+            TextArea::make("summary")->required()->autoSize(),
+            TextArea::make("description")->required()->autoSize(),
         ]);
     }
 
@@ -117,7 +132,7 @@ class ProductResource extends Resource
             ->recordActionsAlignment("center")
             ->columns([
                 DiscountsColumn::make("discounts.*.tiers")->extraCellAttributes(
-                    ["class" => "absolute"]
+                    ["class" => "absolute"],
                 ),
                 Stack::make([
                     ImageColumn::make("image")
@@ -132,7 +147,7 @@ class ProductResource extends Resource
                             ->weight(FontWeight::Bold)
                             ->size(TextSize::Large),
                         WhereToBuyColumn::make(
-                            "productStores"
+                            "productStores",
                         )->extraAttributes(["class" => "mt-2"]),
                     ])->alignBetween(),
                 ])
@@ -156,8 +171,8 @@ class ProductResource extends Resource
                     ->query(
                         fn($query, $data) => $query->when(
                             $data["isActive"] === true,
-                            fn($query) => $query->has("discounts")
-                        )
+                            fn($query) => $query->has("discounts"),
+                        ),
                     ),
             ])
             ->recordActions([

@@ -4,10 +4,6 @@ namespace App\Filament\Resources\ProductResource\Pages;
 
 use App\Filament\Actions\AddToListAction;
 use App\Filament\Resources\ProductResource;
-use App\Models\Product;
-use App\Models\ShoppingListItem;
-use Filament\Actions;
-use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewProduct extends ViewRecord
