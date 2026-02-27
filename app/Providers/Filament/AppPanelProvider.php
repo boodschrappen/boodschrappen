@@ -5,7 +5,6 @@ namespace App\Providers\Filament;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use App\Filament\Pages\FrontPage;
-use App\Filament\Pages\PulseDashboard;
 use Filament\FontProviders\LocalFontProvider;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -61,7 +60,7 @@ class AppPanelProvider extends PanelProvider
                 in: app_path("Filament/Pages"),
                 for: "App\\Filament\\Pages"
             )
-            ->pages([FrontPage::class, PulseDashboard::class])
+            ->pages([FrontPage::class])
             ->discoverWidgets(
                 in: app_path("Filament/Widgets"),
                 for: "App\\Filament\\Widgets"
