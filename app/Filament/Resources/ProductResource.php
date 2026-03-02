@@ -129,6 +129,7 @@ class ProductResource extends Resource
     {
         return $table
             ->searchable()
+            ->searchDebounce("300ms")
             ->recordActionsAlignment("center")
             ->columns([
                 DiscountsColumn::make("discounts.*.tiers")->extraCellAttributes(
@@ -175,6 +176,7 @@ class ProductResource extends Resource
                         ),
                     ),
             ])
+            ->deferFilters(false)
             ->recordActions([
                 ViewAction::make()->hiddenLabel()->icon(null),
                 EditAction::make()->hiddenLabel(),
