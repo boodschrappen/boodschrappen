@@ -90,7 +90,7 @@ services:
         environment:
             MEILI_NO_ANALYTICS: "true"
         volumes:
-            - meilisearch-data:/data
+            - meilisearch-data:/meili_data
         ports:
             - 7700:7700
         networks:
