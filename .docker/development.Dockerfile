@@ -4,13 +4,10 @@ FROM node:${NODE_VERSION} AS node
 
 FROM ghcr.io/boodschrappen/boodschrappen:edge
 
-COPY --from=node /usr/lib /usr/lib
-COPY --from=node /usr/local/lib /usr/local/lib
-COPY --from=node /usr/local/include /usr/local/include
-COPY --from=node /usr/local/bin /usr/local/bin
+COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY --from=node /usr/local/include/node /usr/local/include/node
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
 
-COPY package*.json .
-
-RUN npm i
+RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 
 CMD ["php", "artisan", "octane:start", "--watch", "--server=frankenphp", "--host=0.0.0.0", "--port=8000"]
